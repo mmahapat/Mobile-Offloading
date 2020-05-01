@@ -3,6 +3,7 @@ package com.mobilespark.master;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.io.IOException;
 
@@ -26,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*
+        Simple implemetation of a request can be found at the below function using Volley
+        makeRequest();
+         */
+
+
         imgButton = findViewById(R.id.startStopButton);
         status = findViewById(R.id.status);
 
@@ -41,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "onCreate: \\nRunning! Point your browsers to http://localhost:8080/ \\n\"");
                         serverRunning = true;
                         changeStatus();
+                        Intent intent = new Intent(MainActivity.this, ClientList.class);
+                        startActivity(intent);
                     } catch (IOException e) {
                         serverRunning = false;
                         changeStatus();
@@ -59,6 +76,31 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void makeRequest() {
+        final TextView textView = (TextView) findViewById(R.id.status);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://www.google.com";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        textView.setText("Response is: " + response.substring(0, 500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                textView.setText("That didn't work!");
+            }
+        });
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
     private void changeStatus() {
