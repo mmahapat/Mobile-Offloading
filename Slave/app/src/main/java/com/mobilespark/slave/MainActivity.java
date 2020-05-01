@@ -3,6 +3,7 @@ package com.mobilespark.slave;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton imgButton;
     private TextView status;
     private boolean serverRunning = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!serverRunning) {
                     try {
-                        server = new Server();
+                        server = new Server(getApplicationContext());
                         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
                         Toast.makeText(MainActivity.this, "Client Started",
                                 Toast.LENGTH_LONG).show();
