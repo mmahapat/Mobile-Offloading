@@ -6,6 +6,11 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +58,8 @@ public class Server extends NanoHTTPD {
                 switch (uri) {
                     case "/ping":
                         return ping(bodyParams);
+                    case "/calculate":
+                        return calculateMatrixMultiplication(bodyParams);
                 }
                 return newFixedLengthResponse(Response.Status.NOT_IMPLEMENTED, NanoHTTPD.MIME_PLAINTEXT, "HTTP " + uri);
             default:
