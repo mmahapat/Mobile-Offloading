@@ -7,6 +7,34 @@
     tools:context=".TaskMonitor">
 
     <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="185dp"
+        android:layout_marginTop="479dp"
+        android:layout_marginEnd="165dp"
+        android:layout_marginBottom="233dp"
+        android:text="FallBack Servers"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="549dp"
+        android:layout_marginEnd="162dp"
+        android:layout_marginBottom="134dp"
+        android:text="Assign Task"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,34 +42,19 @@
         android:layout_marginTop="296dp"
         android:layout_marginEnd="127dp"
         android:layout_marginBottom="416dp"
-        android:text="FallBack Servers"
+        android:gravity="center"
+        android:text="Slave Servers"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="157dp"
-        android:layout_marginTop="99dp"
-        android:layout_marginEnd="158dp"
-        android:layout_marginBottom="613dp"
-        android:text="Active Servers"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
     <ListView
         android:id="@+id/activeServers"
         android:layout_width="402dp"
         android:layout_height="100dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginTop="250dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="481dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,28 +69,13 @@
         android:layout_width="402dp"
         android:layout_height="100dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="350dp"
         android:layout_marginEnd="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:layout_marginBottom="281dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activeServers"
-        app:layout_constraintVertical_bias="0.505" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="157dp"
-        android:layout_marginTop="450dp"
-        android:layout_marginEnd="160dp"
-        android:layout_marginBottom="150dp"
-        android:text="Evaluate"
-        app:layout_constraintBottom_toBottomOf="@+id/fallbackServers"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
