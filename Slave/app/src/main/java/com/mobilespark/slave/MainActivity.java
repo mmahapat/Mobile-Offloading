@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -23,19 +25,22 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton imgButton;
     private TextView status;
     private boolean serverRunning = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imgButton = findViewById(R.id.startStopButton);
         status = findViewById(R.id.status);
+        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!serverRunning) {
                     try {
-                        server = new Server(getApplicationContext());
+                        server = new Server(getApplicationContext(), ip);
                         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
                         Toast.makeText(MainActivity.this, "Client Started",
                                 Toast.LENGTH_LONG).show();
