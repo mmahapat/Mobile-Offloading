@@ -2,6 +2,7 @@ package com.mobilespark.master;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ public class ClientList extends AppCompatActivity {
     private static final String TAG = "ClientList";
     private String localIp = "";
     private ListView list;
-    private ArrayList<ClientListData> clientData = new ArrayList<>();
+    public static ArrayList<ClientListData> clientData = new ArrayList<>();
     private Button _startTaskButton;
     private ImageButton _rescanButton;
     private ImageButton _stopServer;
@@ -107,6 +108,18 @@ public class ClientList extends AppCompatActivity {
                 }
             }
         });
+
+        _startTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent taskMonitorScreen = new Intent(ClientList.this, TaskMonitor.class);
+                //HardCoded number of Slaves to 2.To be Updated
+                taskMonitorScreen.putExtra("Slaves",2);
+                //taskMonitorScreen.putExtra("ClientList",clientData);
+                startActivity(taskMonitorScreen);
+            }
+        });
     }
 
     @Override
@@ -165,10 +178,12 @@ public class ClientList extends AppCompatActivity {
             try {
                 String prefix = localIp.substring(0, localIp.lastIndexOf(".") + 1);
                 Log.d(TAG, "prefix: " + prefix);
-
-                for (int i = 2; i < 255; i++) {
+                //Change 5 to 255
+                for (int i = 2; i < 5; i++) {
                     if (isCancelled()) break;
                     String testIp = prefix + i;
+                    //Uncomment below line
+                    testIp = "0.0.0.0";
                     InetAddress address = InetAddress.getByName(testIp);
                     boolean reachable = address.isReachable(256);
                     String hostName = address.getCanonicalHostName();
@@ -176,7 +191,7 @@ public class ClientList extends AppCompatActivity {
                     publishProgress(null, (int) (i * 100 / 255));
                     Log.e(TAG, "doInBackground: ");
                     if (reachable) {
-                        ClientListData clientListData = new ClientListData("Mobile 1", "20%", testIp);
+                        ClientListData clientListData = new ClientListData("Mobile"+i, "20%", testIp);
                         Log.i(TAG, "Host: " + hostName + "(" + testIp + ") is reachable!");
                         publishProgress(clientListData, (i * 100 / 255));
                     }
