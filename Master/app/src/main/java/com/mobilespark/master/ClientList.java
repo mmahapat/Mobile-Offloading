@@ -1,5 +1,7 @@
 package com.mobilespark.master;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,8 +29,10 @@ public class ClientList extends AppCompatActivity {
     private ArrayList<ClientListData> clientData = new ArrayList<>();
     private Button _startTaskButton;
     private ImageButton _rescanButton;
+    private ImageButton _stopServer;
     ProgressBar pb;
-    TextView textView;
+    TextView scanStatus;
+    AsyncTask<Void, Object, Void> execute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +42,14 @@ public class ClientList extends AppCompatActivity {
         _startTaskButton = findViewById(R.id.startTask);
         _rescanButton = findViewById(R.id.rescan);
         pb = findViewById(R.id.progress_horizontal);
-        textView = findViewById(R.id.percent);
-
+        scanStatus = findViewById(R.id.percent);
+        _stopServer = findViewById(R.id.stopServer);
         ClientListAdapter adapter = new ClientListAdapter(this, clientData);
         list.setAdapter(adapter);
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         localIp = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
-        new NetworkDiscovery(localIp, list).execute();
+        execute = new NetworkDiscovery(localIp, list).execute();
 
         Log.e(TAG, "onCreate: " + clientData.size());
 
@@ -59,12 +63,46 @@ public class ClientList extends AppCompatActivity {
                 _startTaskButton.setEnabled(false);
                 pb.setProgress(0);
                 pb.setVisibility(View.VISIBLE);
-                textView.setVisibility(View.VISIBLE);
-                textView.setText("Scanning : 0%");
-                new NetworkDiscovery(localIp, list).execute();
+                scanStatus.setVisibility(View.VISIBLE);
+                scanStatus.setText("Scanning : 0%");
+                execute = new NetworkDiscovery(localIp, list).execute();
             }
         });
+        _stopServer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (execute.getStatus() == AsyncTask.Status.RUNNING) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ClientList.this);
+                    builder1.setMessage("Scanning is on going, still shutdown the server?");
+                    builder1.setCancelable(true);
 
+                    builder1.setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    execute.cancel(true);
+                                    if (MainActivity.server != null)
+                                        MainActivity.server.stop();
+                                    dialog.cancel();
+                                }
+                            });
+
+                    builder1.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else {
+                    if (MainActivity.server != null)
+                        MainActivity.server.stop();
+                }
+            }
+        });
     }
 
     @Override
@@ -80,7 +118,8 @@ public class ClientList extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            textView.setVisibility(View.GONE);
+            Log.d(TAG, "onPostExecute: Finished calls");
+            scanStatus.setVisibility(View.GONE);
             pb.setVisibility(View.GONE);
             Toast.makeText(ClientList.this, "Scan Complete",
                     Toast.LENGTH_LONG).show();
@@ -105,7 +144,7 @@ public class ClientList extends AppCompatActivity {
             } else {
                 int percent = (int) values[1];
                 pb.setProgress(percent);
-                textView.setText("Scanning : " + percent + "%");
+                scanStatus.setText("Scanning : " + percent + "%");
             }
         }
 
@@ -124,12 +163,14 @@ public class ClientList extends AppCompatActivity {
                 Log.d(TAG, "prefix: " + prefix);
 
                 for (int i = 2; i < 255; i++) {
+                    if (isCancelled()) break;
                     String testIp = prefix + i;
                     InetAddress address = InetAddress.getByName(testIp);
                     boolean reachable = address.isReachable(256);
                     String hostName = address.getCanonicalHostName();
                     if (testIp.equalsIgnoreCase(localIp)) continue;
                     publishProgress(null, (int) (i * 100 / 255));
+                    Log.e(TAG, "doInBackground: ");
                     if (reachable) {
                         ClientListData clientListData = new ClientListData("Mobile 1", "20%", testIp);
                         Log.i(TAG, "Host: " + hostName + "(" + testIp + ") is reachable!");
