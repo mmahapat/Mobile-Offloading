@@ -18,7 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.mobilespark.master.WebUtils.NetworkCalls;
+import com.mobilespark.master.WebUtils.VolleyController;
 
 import java.io.IOException;
 
@@ -26,10 +26,10 @@ import fi.iki.elonen.NanoHTTPD;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    public Server server;
+    public static Server server;
     private ImageButton imgButton;
     private TextView status;
-    private boolean serverRunning = false;
+    public static boolean serverRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         Simple implemetation of a request can be found at the below function using Volley
         makeRequest();
          */
-        NetworkCalls call = new NetworkCalls();
-        Log.d(TAG, "onCreate: " + call.makeGetRequest(MainActivity.this, "http://google.com"));
+        VolleyController call = new VolleyController(getApplicationContext());
+//        Log.d(TAG, "onCreate: " + call.makeGetRequest(MainActivity.this, "http://google.com"));
 
         imgButton = findViewById(R.id.startStopButton);
         status = findViewById(R.id.status);
@@ -124,5 +124,12 @@ public class MainActivity extends AppCompatActivity {
         if (server != null)
             server.stop();
         Log.d(TAG, "onCreate: Stopping server");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        changeStatus();
+        Log.e(TAG, "onResume: came here");
     }
 }
