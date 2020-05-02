@@ -6,21 +6,73 @@
     android:layout_height="match_parent"
     android:background="#f1f1f1"
     tools:context=".ClientList">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                >
+
+                <ProgressBar
+                    android:id="@+id/progress_horizontal"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="20dp" />
+
+                <TextView
+                    android:id="@+id/percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:text="Scanning : 0%" />
+
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/rescan"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:src="@drawable/ic_refresh_24px"
+                android:background="#00F1F1F1"
+                android:visibility="gone"
+                />
+
+            <ImageButton
+                android:id="@+id/stopServer"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="1dp"
+                android:background="#00F1F1F1"
+                android:src="@drawable/poweroff24" />
+        </RelativeLayout>
+
         <ListView
             android:id="@+id/nodelist"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_marginTop="20dp"
+            android:layout_height="300dp" />
 
-        <TextView
-            android:id="@+id/result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/startTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:enabled="false"
+            android:layout_marginTop="30dp"
+            android:text="Start Task" />
+
     </LinearLayout>
 </RelativeLayout>
