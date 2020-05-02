@@ -15,12 +15,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.mobilespark.master.Pojos.ClientListData;
+import com.mobilespark.master.WebUtils.VolleyController;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ClientList extends AppCompatActivity {
     private static final String TAG = "ClientList";
@@ -118,7 +123,7 @@ public class ClientList extends AppCompatActivity {
     }
 
 
-    class NetworkDiscovery extends AsyncTask<Void, Object, Void> {
+    class NetworkDiscovery extends AsyncTask<Void, Object, Void> implements ClientResponse {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
@@ -163,29 +168,41 @@ public class ClientList extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                String prefix = localIp.substring(0, localIp.lastIndexOf(".") + 1);
+                String prefix = "192.168.0.";
                 Log.d(TAG, "prefix: " + prefix);
 
                 for (int i = 2; i < 255; i++) {
                     if (isCancelled()) break;
                     String testIp = prefix + i;
-                    InetAddress address = InetAddress.getByName(testIp);
-                    boolean reachable = address.isReachable(256);
-                    String hostName = address.getCanonicalHostName();
-                    if (testIp.equalsIgnoreCase(localIp)) continue;
-                    publishProgress(null, (int) (i * 100 / 255));
-                    Log.e(TAG, "doInBackground: ");
-                    if (reachable) {
-                        ClientListData clientListData = new ClientListData("Mobile 1", "20%", testIp);
-                        Log.i(TAG, "Host: " + hostName + "(" + testIp + ") is reachable!");
-                        publishProgress(clientListData, (i * 100 / 255));
-                    }
+                    String url = "http://" + testIp + ":8080/status";
+                    VolleyController volleyController = new VolleyController(getApplicationContext());
+                    JSONObject body = new JSONObject();
+                    body.put("ip", localIp);
+                    volleyController.makeRequest(url, body, NetworkDiscovery.this);
                 }
             } catch (Throwable t) {
                 Log.e(TAG, "Well that's not good.", t);
             }
 
             return null;
+        }
+
+        @Override
+        public void onSuccess(JSONObject jsonObject) {
+            String clientIp = "Empty";
+            try {
+                clientIp = (String) jsonObject.get("ip");
+            } catch (JSONException e) {
+
+            }
+            ClientListData clientListData = new ClientListData("Mobile 1", "20%", clientIp);
+            Log.i(TAG, jsonObject.toString());
+            publishProgress(clientListData, 30);
+        }
+
+        @Override
+        public void onFailure(VolleyError error) {
+
         }
     }
 }
