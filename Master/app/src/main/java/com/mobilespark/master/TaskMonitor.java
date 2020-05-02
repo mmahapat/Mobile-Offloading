@@ -2,7 +2,10 @@ package com.mobilespark.master;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.mobilespark.master.Pojos.ClientListData;
@@ -16,6 +19,7 @@ public class TaskMonitor extends AppCompatActivity {
     private ArrayList<ClientListData> clientData;
     private ArrayList<ClientListData> activeClientData;
     private ArrayList<ClientListData> fallbackClientData;
+    private Button _assignTaskButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,7 @@ public class TaskMonitor extends AppCompatActivity {
 
         activeServerslist = findViewById(R.id.activeServers);
         fallbackServerslist = findViewById(R.id.fallbackServers);
+        _assignTaskButton = findViewById(R.id.assignbutton);
 
         int i = 0;
         activeClientData = new ArrayList<>();
@@ -43,6 +48,13 @@ public class TaskMonitor extends AppCompatActivity {
         fallbackServerslist.setAdapter(fallbackServerAdapter);
 
         //((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+        _assignTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                System.out.println("To do /calculate");
+            }
+        });
 
     }
 }
