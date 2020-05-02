@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.mobilespark.master.WebUtils.NetworkCalls;
 
 import java.io.IOException;
 
@@ -39,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         Simple implemetation of a request can be found at the below function using Volley
         makeRequest();
          */
-
+        NetworkCalls call = new NetworkCalls();
+        Log.d(TAG, "onCreate: " + call.makeGetRequest(MainActivity.this, "http://google.com"));
 
         imgButton = findViewById(R.id.startStopButton);
         status = findViewById(R.id.status);
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeRequest() {
-        final TextView textView = (TextView) findViewById(R.id.status);
+        final TextView textView = findViewById(R.id.status);
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://www.google.com";
