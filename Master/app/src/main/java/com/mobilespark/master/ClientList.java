@@ -84,6 +84,8 @@ public class ClientList extends AppCompatActivity {
                                     if (MainActivity.server != null)
                                         MainActivity.server.stop();
                                     dialog.cancel();
+                                    MainActivity.serverRunning = false;
+                                    ClientList.super.onBackPressed();
                                 }
                             });
 
@@ -100,6 +102,8 @@ public class ClientList extends AppCompatActivity {
                 } else {
                     if (MainActivity.server != null)
                         MainActivity.server.stop();
+                    MainActivity.serverRunning = false;
+                    ClientList.super.onBackPressed();
                 }
             }
         });
