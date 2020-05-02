@@ -174,10 +174,12 @@ public class ClientList extends AppCompatActivity {
                 for (int i = 2; i < 255; i++) {
                     if (isCancelled()) break;
                     String testIp = prefix + i;
+                    if (testIp.equals(localIp)) continue;
                     String url = "http://" + testIp + ":8080/status";
                     VolleyController volleyController = new VolleyController(getApplicationContext());
                     JSONObject body = new JSONObject();
                     body.put("ip", localIp);
+                    publishProgress(null, (i * 100) / 255);
                     volleyController.makeRequest(url, body, NetworkDiscovery.this);
                 }
             } catch (Throwable t) {
@@ -190,19 +192,23 @@ public class ClientList extends AppCompatActivity {
         @Override
         public void onSuccess(JSONObject jsonObject) {
             String clientIp = "Empty";
+            String battery = "Empty";
+            String deviceName = "Empty";
             try {
                 clientIp = (String) jsonObject.get("ip");
+                battery = (String) jsonObject.get("battery");
+                deviceName = (String) jsonObject.get("deviceName");
             } catch (JSONException e) {
-
+                Log.e(TAG, "onSuccess: " + "Could not pass JSON");
             }
-            ClientListData clientListData = new ClientListData("Mobile 1", "20%", clientIp);
+            ClientListData clientListData = new ClientListData(deviceName, battery, clientIp);
             Log.i(TAG, jsonObject.toString());
             publishProgress(clientListData, 30);
         }
 
         @Override
         public void onFailure(VolleyError error) {
-
+            Log.e(TAG, "onFailure: " + "Client not online");
         }
     }
 }
