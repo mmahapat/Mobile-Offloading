@@ -6,6 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".TaskMonitor">
 
+    <Button
+        android:id="@+id/assignbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="73dp"
+        android:layout_marginTop="549dp"
+        android:layout_marginEnd="250dp"
+        android:layout_marginBottom="134dp"
+        android:text="ASSIGN "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="263dp"
+        android:layout_marginTop="549dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="134dp"
+        android:text="MERGE RESULT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -15,20 +43,6 @@
         android:layout_marginEnd="165dp"
         android:layout_marginBottom="233dp"
         android:text="FallBack Servers"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/assignbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginTop="549dp"
-        android:layout_marginEnd="162dp"
-        android:layout_marginBottom="134dp"
-        android:text="Assign Task"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +66,7 @@
     <ListView
         android:id="@+id/activeServers"
         android:layout_width="402dp"
-        android:layout_height="100dp"
+        android:layout_height="200dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="250dp"
         android:layout_marginEnd="5dp"
