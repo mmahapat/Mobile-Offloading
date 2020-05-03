@@ -36,13 +36,14 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private Map<String, int[]> activeClientMap;
     private Map<String, int[]> fallbackClientMap;
     private Button _assignTaskButton;
+    private int Slaves;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_monitor);
         clientData = ClientList.clientData;
-        int Slaves = getIntent().getExtras().getInt("Slaves");
+        Slaves = getIntent().getExtras().getInt("Slaves");
 
         activeServerslist = findViewById(R.id.activeServers);
         fallbackServerslist = findViewById(R.id.fallbackServers);
@@ -146,14 +147,14 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         public void run() {
 
             //Check number of failed Servers
-            List<Integer> failedServers = new ArrayList<>();
+            List<Integer> activeServers = new ArrayList<>();
             for(String key: activeClientMap.keySet()){
                 int[]data = activeClientMap.get(key);
-                if(data[1] == 0)
-                    failedServers.add(data[0]);
+                if(data[1] == 1)
+                    activeServers.add(data[0]);
             }
             //Move fallbackClientData  into activeClientData
-            for(int i = 0 ; i < failedServers.size() && i < fallbackClientData.size(); i++){
+            for(int i = 0 ; i < (Slaves-activeServers.size()) && i < fallbackClientData.size(); i++){
                 int pos = activeClientData.size();
                 activeClientData.add(fallbackClientData.get(i));
                 activeClientMap.put(fallbackClientData.get(i).clientIp, new int[]{pos,0});
