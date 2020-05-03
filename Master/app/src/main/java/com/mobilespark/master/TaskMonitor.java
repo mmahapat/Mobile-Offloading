@@ -156,10 +156,10 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             //Move fallbackClientData  into activeClientData
             for(int i = 0 ; i < (Slaves-activeServers.size()) && i < fallbackClientData.size(); i++){
                 int pos = activeClientData.size();
-                activeClientData.add(fallbackClientData.get(i));
-                activeClientMap.put(fallbackClientData.get(i).clientIp, new int[]{pos,0});
-                fallbackClientMap.remove(fallbackClientData.get(i).clientIp);
-                fallbackClientData.remove(i);
+                activeClientData.add(fallbackClientData.get(0));
+                activeClientMap.put(fallbackClientData.get(0).clientIp, new int[]{pos,0});
+                fallbackClientMap.remove(fallbackClientData.get(0).clientIp);
+                fallbackClientData.remove(0);
 
                 //activeServerslist.getChildAt(pos).setBackgroundColor(Color.YELLOW);
 
