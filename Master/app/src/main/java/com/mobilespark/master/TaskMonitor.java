@@ -83,6 +83,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 for(int count = 0 ; count < activeClientData.size();count++) {
                     try {
                         String url = "http://" + activeClientData.get(count).clientIp + ":8080/calculate";
+                        //url = "http://192.168.0.6:8080/calculate";
                         VolleyController volleyController = new VolleyController(getApplicationContext());
                         JSONObject body = new JSONObject();
                         body.put("startX", 0);
@@ -131,13 +132,16 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             Log.e(TAG, "onSuccess: " + "Could not pass JSON");
         }
 
-        int index = activeClientMap.get(clientIp);
-        activeServerslist.getChildAt(index).setBackgroundColor(Color.GREEN);
+        if(activeClientMap.containsKey(clientIp)) {
+            int index = activeClientMap.get(clientIp);
+            activeServerslist.getChildAt(index).setBackgroundColor(Color.GREEN);
+        }
 
     }
 
     @Override
     public void onFailure(VolleyError error) {
+        System.out.println("Error"+ error);
 
     }
 }
