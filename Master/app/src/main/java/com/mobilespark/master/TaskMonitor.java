@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -31,8 +32,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private ArrayList<ClientListData> clientData;
     private ArrayList<ClientListData> activeClientData;
     private ArrayList<ClientListData> fallbackClientData;
-    private Map<String, Integer> activeClientMap;
-    private Map<String, Integer> fallbackClientMap;
+    //int[] stores the postion in array and status
+    private Map<String, int[]> activeClientMap;
+    private Map<String, int[]> fallbackClientMap;
     private Button _assignTaskButton;
 
     @Override
@@ -69,7 +71,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         fallbackServerslist.setAdapter(fallbackServerAdapter);
 
         Handler handler = new Handler();
-        handler.postDelayed(task, 2000);
+        handler.postDelayed(loaddata, 2000);
 
         _assignTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,45 +83,98 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
 
                 for(int count = 0 ; count < activeClientData.size();count++) {
-                    try {
-                        String url = "http://" + activeClientData.get(count).clientIp + ":8080/calculate";
-                        //url = "http://192.168.0.6:8080/calculate";
-                        VolleyController volleyController = new VolleyController(getApplicationContext());
-                        JSONObject body = new JSONObject();
-                        body.put("startX", 0);
-                        body.put("endX", 4);
-                        body.put("startY", 5);
-                        body.put("endY", 9);
-                        volleyController.makeRequest(url, body, TaskMonitor.this);
-                    }
-                    catch (Throwable t) {
-                        Log.e(TAG, "Well that's not good.", t);
-                    }
+                    addtoTaskqueue(count);
                 }
 
+                Handler handler = new Handler();
+                handler.postDelayed(updatestatus, 3000);
 
 
-                //fallbackServerslist.setBackgroundColor(Color.BLUE);
-                //activeServerslist.setBackgroundColor(Color.parseColor("#9fe7ff"));
                 //((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
             }
         });
 
     }
-
-    private Runnable task = new Runnable() {
+    private void addtoTaskqueue(int  count){
+        try {
+            String url = "http://" + activeClientData.get(count).clientIp + ":8080/calculate";
+            url = "http://192.168.0.6:8080/calculate";
+            VolleyController volleyController = new VolleyController(getApplicationContext());
+            JSONObject body = new JSONObject();
+            body.put("startX", 0);
+            body.put("endX", 4);
+            body.put("startY", 5);
+            body.put("endY", 9);
+            volleyController.makeRequest(url, body, TaskMonitor.this);
+        }
+        catch (Throwable t) {
+            Log.e(TAG, "Well that's not good.", t);
+        }
+    }
+    private Runnable loaddata = new Runnable() {
         public void run() {
             for (int count = 0; count < activeClientData.size(); count++) {
                 activeServerslist.getChildAt(count).setBackgroundColor(Color.YELLOW);
-                activeClientMap.put(activeClientData.get(count).clientIp, count);
+                activeClientMap.put(activeClientData.get(count).clientIp, new int[]{count,0});
             }
             for (int count = 0; count < fallbackClientData.size(); count++) {
                 fallbackServerslist.getChildAt(count).setBackgroundColor(Color.GRAY);
-                fallbackClientMap.put(fallbackClientData.get(count).clientIp, count);
+                fallbackClientMap.put(fallbackClientData.get(count).clientIp, new int[]{count,0});
             }
         }
     };
 
+
+    private Runnable updatestatus = new Runnable() {
+        public void run() {
+            // Mark failed servers as red based on timeout
+            for (int count = 0; count < activeClientData.size(); count++) {
+                int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
+
+                if(data[1] == 0){
+                    activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+                }
+            }
+
+            Handler handler = new Handler();
+            handler.postDelayed(fallback, 3000);
+
+        }
+    };
+
+    private Runnable fallback = new Runnable() {
+        public void run() {
+
+            //Check number of failed Servers
+            List<Integer> failedServers = new ArrayList<>();
+            for(String key: activeClientMap.keySet()){
+                int[]data = activeClientMap.get(key);
+                if(data[1] == 0)
+                    failedServers.add(data[0]);
+            }
+            //Move fallbackClientData  into activeClientData
+            for(int i = 0 ; i < failedServers.size() && i < fallbackClientData.size(); i++){
+                int pos = activeClientData.size();
+                activeClientData.add(fallbackClientData.get(i));
+                activeClientMap.put(fallbackClientData.get(i).clientIp, new int[]{pos,0});
+                fallbackClientMap.remove(fallbackClientData.get(i).clientIp);
+                fallbackClientData.remove(i);
+
+                //activeServerslist.getChildAt(pos).setBackgroundColor(Color.YELLOW);
+
+
+                addtoTaskqueue(pos);
+
+            }
+
+            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+            Handler handler = new Handler();
+            handler.postDelayed(updatestatus, 3000);
+
+
+        }
+    };
 
     @Override
     public void onSuccess(JSONObject jsonObject) {
@@ -133,8 +188,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         }
 
         if(activeClientMap.containsKey(clientIp)) {
-            int index = activeClientMap.get(clientIp);
-            activeServerslist.getChildAt(index).setBackgroundColor(Color.GREEN);
+            int[] data = activeClientMap.get(clientIp);
+            activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.GREEN);
+            activeClientMap.put(clientIp,new int[]{data[0],1});
         }
 
     }
