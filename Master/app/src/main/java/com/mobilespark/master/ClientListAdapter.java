@@ -1,13 +1,11 @@
 package com.mobilespark.master;
 
 import android.content.Context;
-import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.mobilespark.master.Pojos.ClientListData;
@@ -39,7 +37,15 @@ public class ClientListAdapter extends ArrayAdapter {
             TextView clientName = convertView.findViewById(R.id.clientName);
             clientName.setText(clientData.clientName);
             TextView battery = convertView.findViewById(R.id.battery);
-            battery.setText(clientData.batteryPercentage);
+            double ba = Double.parseDouble(clientData.batteryPercentage);
+            if (ba < 20) {
+                battery.setTextColor(Color.parseColor("#bf1f1f"));
+            } else if (ba < 70 && ba > 21) {
+                battery.setTextColor(Color.parseColor("#FFCC00"));
+            } else {
+                battery.setTextColor(Color.parseColor("#10b542"));
+            }
+            battery.setText(clientData.batteryPercentage + "%");
             TextView clientIp = convertView.findViewById(R.id.clientIp);
             clientIp.setText(clientData.clientIp);
         }
