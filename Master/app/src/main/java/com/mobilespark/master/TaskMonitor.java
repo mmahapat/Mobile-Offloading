@@ -151,6 +151,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                     getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
                 }
             }
+            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
 
             Handler handler = new Handler();
             handler.postDelayed(fallback, 3000);
