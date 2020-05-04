@@ -96,6 +96,18 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         });
 
     }
+
+    public View getViewByPosition(int position, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (position < firstListItemPosition || position > lastListItemPosition ) {
+            return listView.getAdapter().getView(position, null, listView);
+        } else {
+            final int childIndex = position - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
+    }
     private void addtoTaskqueue(int  count){
         try {
             String url = "http://" + activeClientData.get(count).clientIp + ":8080/calculate";
@@ -115,11 +127,13 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private Runnable loaddata = new Runnable() {
         public void run() {
             for (int count = 0; count < activeClientData.size(); count++) {
-                activeServerslist.getChildAt(count).setBackgroundColor(Color.YELLOW);
+                //activeServerslist.getChildAt(count).setBackgroundColor(Color.YELLOW);
+                getViewByPosition(count,activeServerslist).setBackgroundColor(Color.YELLOW);
                 activeClientMap.put(activeClientData.get(count).clientIp, new int[]{count,0});
             }
             for (int count = 0; count < fallbackClientData.size(); count++) {
-                fallbackServerslist.getChildAt(count).setBackgroundColor(Color.GRAY);
+                //fallbackServerslist.getChildAt(count).setBackgroundColor(Color.GRAY);
+                getViewByPosition(count,fallbackServerslist).setBackgroundColor(Color.GRAY);
                 fallbackClientMap.put(fallbackClientData.get(count).clientIp, new int[]{count,0});
             }
         }
@@ -133,7 +147,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
 
                 if(data[1] == 0){
-                    activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+                    //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+                    getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
                 }
             }
 
@@ -149,7 +164,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
 
                 if(data[1] == 0){
-                    activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+                    //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+                    getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
+
                 }
             }
             ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
@@ -205,7 +222,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         if(activeClientMap.containsKey(clientIp)) {
             int[] data = activeClientMap.get(clientIp);
-            activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.GREEN);
+            //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.GREEN);
+            getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.GREEN);
             activeClientMap.put(clientIp,new int[]{data[0],1});
         }
 
