@@ -142,6 +142,21 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         }
     };
+    private Runnable updatestatus2 = new Runnable() {
+        public void run() {
+            // Mark failed servers as red based on timeout
+            for (int count = 0; count < activeClientData.size(); count++) {
+                int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
+
+                if(data[1] == 0){
+                    activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+                }
+            }
+            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+
+        }
+    };
 
     private Runnable fallback = new Runnable() {
         public void run() {
@@ -171,7 +186,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
             ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
             Handler handler = new Handler();
-            handler.postDelayed(updatestatus, 3000);
+            handler.postDelayed(updatestatus2, 3000);
 
 
         }
@@ -193,6 +208,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.GREEN);
             activeClientMap.put(clientIp,new int[]{data[0],1});
         }
+
+        ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+        ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
 
     }
 
