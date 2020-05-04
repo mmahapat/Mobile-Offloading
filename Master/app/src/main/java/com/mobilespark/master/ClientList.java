@@ -125,8 +125,8 @@ public class ClientList extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent taskMonitorScreen = new Intent(ClientList.this, TaskMonitor.class);
-                //HardCoded number of Slaves to 2.To be Updated
-                taskMonitorScreen.putExtra("Slaves", 2);
+                String slaveNumber = _clientNumbers.getSelectedItem().toString();
+                taskMonitorScreen.putExtra("Slaves", Integer.parseInt(slaveNumber));
                 //taskMonitorScreen.putExtra("ClientList",clientData);
                 startActivity(taskMonitorScreen);
             }
