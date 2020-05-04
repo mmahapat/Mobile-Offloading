@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,13 +22,13 @@ import com.android.volley.VolleyError;
 import com.mobilespark.master.Pojos.ClientListData;
 import com.mobilespark.master.WebUtils.VolleyController;
 
-import java.net.InetAddress;
-import java.util.ArrayList;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class ClientList extends AppCompatActivity {
     private static final String TAG = "ClientList";
@@ -36,6 +38,8 @@ public class ClientList extends AppCompatActivity {
     private Button _startTaskButton;
     private ImageButton _rescanButton;
     private ImageButton _stopServer;
+    private Spinner _clientNumbers;
+    private TextView _clientNumberText;
     ProgressBar pb;
     TextView scanStatus;
     AsyncTask<Void, Object, Void> execute;
@@ -50,6 +54,8 @@ public class ClientList extends AppCompatActivity {
         pb = findViewById(R.id.progress_horizontal);
         scanStatus = findViewById(R.id.percent);
         _stopServer = findViewById(R.id.stopServer);
+        _clientNumbers = findViewById(R.id.clientNumber);
+        _clientNumberText = findViewById(R.id.clientNumberText);
         ClientListAdapter adapter = new ClientListAdapter(this, clientData);
         list.setAdapter(adapter);
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
@@ -120,7 +126,7 @@ public class ClientList extends AppCompatActivity {
 
                 Intent taskMonitorScreen = new Intent(ClientList.this, TaskMonitor.class);
                 //HardCoded number of Slaves to 2.To be Updated
-                taskMonitorScreen.putExtra("Slaves",2);
+                taskMonitorScreen.putExtra("Slaves", 2);
                 //taskMonitorScreen.putExtra("ClientList",clientData);
                 startActivity(taskMonitorScreen);
             }
@@ -148,8 +154,19 @@ public class ClientList extends AppCompatActivity {
             if (clientData.size() < 1) {
                 Toast.makeText(ClientList.this, "No Clients found, Please Rescan",
                         Toast.LENGTH_LONG).show();
+                _clientNumbers.setVisibility(View.GONE);
+                _clientNumberText.setVisibility(View.GONE);
             } else {
+                _clientNumbers.setVisibility(View.VISIBLE);
+                _clientNumberText.setVisibility(View.VISIBLE);
                 _startTaskButton.setEnabled(true);
+                List<Integer> list = new ArrayList<>();
+                for (int i = 1; i <= clientData.size(); i++) {
+                    list.add(i);
+                }
+                ArrayAdapter<Integer> dataAdapter = new ArrayAdapter<Integer>(ClientList.this, android.R.layout.simple_spinner_item, list);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                _clientNumbers.setAdapter(dataAdapter);
             }
             _rescanButton.setVisibility(View.VISIBLE);
         }
@@ -162,6 +179,12 @@ public class ClientList extends AppCompatActivity {
 //            super.onProgressUpdate(values);
             if (values[0] != null) {
                 clientData.add((ClientListData) values[0]);
+                //Dummy data
+//                clientData.add((ClientListData) values[0]);
+//                clientData.add((ClientListData) values[0]);
+//                clientData.add((ClientListData) values[0]);
+//                clientData.add((ClientListData) values[0]);
+//                clientData.add((ClientListData) values[0]);
                 ((ClientListAdapter) (listView.getAdapter())).notifyDataSetChanged();
             } else {
                 int percent = (int) values[1];

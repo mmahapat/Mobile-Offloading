@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#f1f1f1"
     tools:context=".ClientList">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,12 +17,28 @@
             android:layout_width="match_parent"
             android:layout_height="43dp">
 
+            <ImageButton
+                android:id="@+id/rescan"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:background="#00F1F1F1"
+                android:src="@drawable/ic_refresh_24px"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/stopServer"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="1dp"
+                android:background="#00F1F1F1"
+                android:src="@drawable/poweroff24" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center_horizontal"
-                >
+                android:orientation="vertical">
 
                 <ProgressBar
                     android:id="@+id/progress_horizontal"
@@ -39,39 +56,49 @@
                     android:text="Scanning : 0%" />
 
             </LinearLayout>
-            <ImageButton
-                android:id="@+id/rescan"
-                android:layout_width="43dp"
-                android:layout_height="43dp"
-                android:src="@drawable/ic_refresh_24px"
-                android:background="#00F1F1F1"
-                android:visibility="gone"
-                />
-
-            <ImageButton
-                android:id="@+id/stopServer"
-                android:layout_width="43dp"
-                android:layout_height="43dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="1dp"
-                android:background="#00F1F1F1"
-                android:src="@drawable/poweroff24" />
         </RelativeLayout>
 
         <ListView
             android:id="@+id/nodelist"
             android:layout_width="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_height="300dp" />
-
-        <Button
-            android:id="@+id/startTask"
-            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_marginTop="20dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:enabled="false"
             android:layout_marginTop="30dp"
-            android:text="Start Task" />
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                >
+                <TextView
+                    android:id="@+id/clientNumberText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:text="Select the number of clients" />
+
+                <Spinner
+                    android:id="@+id/clientNumber"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/startTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:enabled="false"
+                android:layout_marginTop="20dp"
+                android:text="Start Task" />
+        </LinearLayout>
+
 
     </LinearLayout>
 </RelativeLayout>
