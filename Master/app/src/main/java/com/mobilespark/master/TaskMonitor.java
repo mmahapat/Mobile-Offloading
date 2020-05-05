@@ -246,7 +246,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         @Override
         public int compare(ClientListData t1, ClientListData t2) {
-            return Integer.valueOf(t2.batteryPercentage) - Integer.valueOf(t1.batteryPercentage);
+            return (int) (Float.valueOf(t2.batteryPercentage) - Float.valueOf(t1.batteryPercentage));
         }
     }
 }
