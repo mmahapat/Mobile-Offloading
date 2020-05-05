@@ -18,6 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +56,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         activeClientMap = new HashMap<>();
         fallbackClientMap = new HashMap<>();
 
-
+        //Sort in Decreasing battery power
+        Collections.sort(clientData,new batterySort());
         while (i < slaves && i < clientData.size())
             activeClientData.add(clientData.get(i++));
 
@@ -237,5 +240,13 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     public void onFailure(VolleyError error, String identifier) {
         System.out.println("Error"+ error);
 
+    }
+
+    class batterySort implements Comparator<ClientListData>{
+
+        @Override
+        public int compare(ClientListData t1, ClientListData t2) {
+            return Integer.valueOf(t2.batteryPercentage) - Integer.valueOf(t1.batteryPercentage);
+        }
     }
 }
