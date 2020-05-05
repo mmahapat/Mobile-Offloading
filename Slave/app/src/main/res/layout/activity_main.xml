@@ -25,6 +25,17 @@
         android:textSize="18dp"></TextView>
 
     <TextView
+        android:id="@+id/master"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:text="Not Connected to Master"
+        android:textColor="#bf1f1f"
+        android:gravity="center"
+        android:textSize="18dp"></TextView>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

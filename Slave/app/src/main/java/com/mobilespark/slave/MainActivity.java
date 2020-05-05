@@ -3,8 +3,6 @@ package com.mobilespark.slave;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -24,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public Server server;
     private ImageButton imgButton;
     private TextView status;
+    TextView master;
     private boolean serverRunning = false;
 
     @Override
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         imgButton = findViewById(R.id.startStopButton);
         status = findViewById(R.id.status);
+        master = findViewById(R.id.master);
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!serverRunning) {
                     try {
-                        server = new Server(getApplicationContext(), ip);
+                        server = new Server(getApplicationContext(), ip , master);
                         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
                         Toast.makeText(MainActivity.this, "Client Started",
                                 Toast.LENGTH_LONG).show();
@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             imgButton.setImageResource(R.drawable.poweron);
             status.setText("Client Status : OFF");
+            master.setText("Not Connected to Master");
+            master.setTextColor(Color.parseColor("#bf1f1f"));
             status.setTextColor(Color.parseColor("#bf1f1f"));
         }
     }
