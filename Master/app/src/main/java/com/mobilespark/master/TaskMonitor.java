@@ -68,7 +68,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         fallbackClientMap = new HashMap<>();
 
         //Sort in Decreasing battery power
-        Collections.sort(clientData,new batterySort());
+        Collections.sort(clientData,new BatteryComparator());
         while (i < slaves && i < clientData.size())
             activeClientData.add(clientData.get(i++));
 
@@ -336,11 +336,5 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
     }
 
-    class batterySort implements Comparator<ClientListData>{
 
-        @Override
-        public int compare(ClientListData t1, ClientListData t2) {
-            return (int) (Float.parseFloat(t2.batteryPercentage) - Float.parseFloat(t1.batteryPercentage));
-        }
-    }
 }
