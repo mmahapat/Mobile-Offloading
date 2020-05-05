@@ -36,7 +36,14 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private Map<String, int[]> activeClientMap;
     private Map<String, int[]> fallbackClientMap;
     private Button _assignTaskButton;
+    private Button _mergeTaskButton;
     private int slaves;
+    private int[][] inputMatrixA;
+    private int[][] inputMatrixB;
+    private int[][] outputMatrix;
+    //key: "0-250" value: "S": Success, "F": Failure, "P": Pending
+    private Map<String,String> outputMatrixStatusMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         activeServerslist = findViewById(R.id.activeServers);
         fallbackServerslist = findViewById(R.id.fallbackServers);
         _assignTaskButton = findViewById(R.id.assignbutton);
+        _mergeTaskButton = findViewById(R.id.mergebutton);
 
         int i = 0;
 
@@ -91,10 +99,40 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 Handler handler = new Handler();
                 handler.postDelayed(updatestatus, 3000);
 
-
+                //Initiate Matrix and Status Map
+                initliaizeMatrixParams(1000);
                 //((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
             }
         });
+
+        _mergeTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mergeMatrix();
+            }
+        });
+
+    }
+
+    public void mergeMatrix(){
+
+    }
+    public void initliaizeMatrixParams(int size){
+        inputMatrixA = GenerateMatrix.createMatrix(size,size);
+        inputMatrixB = GenerateMatrix.createMatrix(size,size);
+        outputMatrixStatusMap = new HashMap<>();
+        int start = 0;
+        int end = 0;
+        int range = size / slaves;
+        int reminder = size % slaves;
+        for(int i = 0; i < slaves ; i++) {
+            if( i == 0)
+                end += range + reminder;
+
+            end += range;
+            outputMatrixStatusMap.put(String.valueOf(start)+"-"+String.valueOf(end), "F");
+            start = end;
+        }
 
     }
 
@@ -116,11 +154,25 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 //            url = "http://192.168.0.6:8080/calculate";
             VolleyController volleyController = new VolleyController(getApplicationContext());
             JSONObject body = new JSONObject();
-            body.put("startX", 0);
-            body.put("endX", 4);
-            body.put("startY", 5);
-            body.put("endY", 9);
-            volleyController.makeRequest(url, body, TaskMonitor.this, clientIp);
+//            body.put("startX", 0);
+////            body.put("endX", 4);
+////            body.put("startY", 5);
+////            body.put("endY", 9);
+            int start = 0;
+            int end = 0;
+            StringBuilder inputParameter = new StringBuilder(clientIp);
+            for(String key : outputMatrixStatusMap.keySet()){
+                if(outputMatrixStatusMap.get(key).equals("F")){
+                    inputParameter.append(" ");
+                    inputParameter.append(key);
+                    String[] parts = key.split("-");
+                    start = Integer.parseInt(parts[0]);
+                    end = Integer.parseInt(parts[0]);
+                    break;
+                }
+            }
+            GenerateMatrix.splitMatrixHorizontally(start,end,inputMatrixA);
+            volleyController.makeRequest(url, body, TaskMonitor.this, inputParameter.toString());
         }
         catch (Throwable t) {
             Log.e(TAG, "Well that's not good.", t);
@@ -213,6 +265,18 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         }
     };
 
+    public void updateMatrix(JSONObject jsonObject, String identifier){
+        // Update the output Matrix
+        outputMatrixStatusMap.put(identifier,"S");
+        for(String val : outputMatrixStatusMap.values()){
+            if(val.equals("P") || val.equals("F"))
+                break;
+            //If all rows are filled merge matrix;
+            mergeMatrix();
+        }
+
+    }
+
     @Override
     public void onSuccess(JSONObject jsonObject, String identifier) {
         String clientIp = "Empty";
@@ -234,6 +298,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
         ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
 
+        updateMatrix(jsonObject, identifier);
+
     }
 
     @Override
@@ -246,7 +312,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         @Override
         public int compare(ClientListData t1, ClientListData t2) {
-            return (int) (Float.valueOf(t2.batteryPercentage) - Float.valueOf(t1.batteryPercentage));
+            return (int) (Float.parseFloat(t2.batteryPercentage) - Float.parseFloat(t1.batteryPercentage));
         }
     }
 }
