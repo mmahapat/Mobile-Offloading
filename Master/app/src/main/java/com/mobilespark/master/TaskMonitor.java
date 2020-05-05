@@ -2,7 +2,6 @@ package com.mobilespark.master;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
@@ -36,14 +34,14 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private Map<String, int[]> activeClientMap;
     private Map<String, int[]> fallbackClientMap;
     private Button _assignTaskButton;
-    private int Slaves;
+    private int slaves;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_monitor);
         clientData = ClientList.clientData;
-        Slaves = getIntent().getExtras().getInt("Slaves");
+        slaves = getIntent().getExtras().getInt("Slaves");
 
         activeServerslist = findViewById(R.id.activeServers);
         fallbackServerslist = findViewById(R.id.fallbackServers);
@@ -57,7 +55,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         fallbackClientMap = new HashMap<>();
 
 
-        while (i < Slaves && i < clientData.size())
+        while (i < slaves && i < clientData.size())
             activeClientData.add(clientData.get(i++));
 
 
@@ -110,15 +108,16 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     }
     private void addtoTaskqueue(int  count){
         try {
-            String url = "http://" + activeClientData.get(count).clientIp + ":8080/calculate";
-            url = "http://192.168.0.6:8080/calculate";
+            String clientIp = activeClientData.get(count).clientIp;
+            String url = "http://" + clientIp + ":8080/calculate";
+//            url = "http://192.168.0.6:8080/calculate";
             VolleyController volleyController = new VolleyController(getApplicationContext());
             JSONObject body = new JSONObject();
             body.put("startX", 0);
             body.put("endX", 4);
             body.put("startY", 5);
             body.put("endY", 9);
-            volleyController.makeRequest(url, body, TaskMonitor.this);
+            volleyController.makeRequest(url, body, TaskMonitor.this, clientIp);
         }
         catch (Throwable t) {
             Log.e(TAG, "Well that's not good.", t);
@@ -188,7 +187,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                     activeServers.add(data[0]);
             }
             //Move fallbackClientData  into activeClientData
-            for(int i = 0 ; i < (Slaves-activeServers.size()) && i < fallbackClientData.size(); i++){
+            for(int i = 0; i < (slaves -activeServers.size()) && i < fallbackClientData.size(); i++){
                 int pos = activeClientData.size();
                 activeClientData.add(fallbackClientData.get(0));
                 activeClientMap.put(fallbackClientData.get(0).clientIp, new int[]{pos,0});
@@ -212,7 +211,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     };
 
     @Override
-    public void onSuccess(JSONObject jsonObject) {
+    public void onSuccess(JSONObject jsonObject, String identifier) {
         String clientIp = "Empty";
 
         try {
@@ -235,7 +234,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     }
 
     @Override
-    public void onFailure(VolleyError error) {
+    public void onFailure(VolleyError error, String identifier) {
         System.out.println("Error"+ error);
 
     }

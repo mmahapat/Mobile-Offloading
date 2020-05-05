@@ -216,7 +216,7 @@ public class ClientList extends AppCompatActivity {
                     JSONObject body = new JSONObject();
                     body.put("ip", localIp);
                     publishProgress(null, (i * 100) / 255);
-                    volleyController.makeRequest(url, body, NetworkDiscovery.this);
+                    volleyController.makeRequest(url, body, NetworkDiscovery.this, null);
                 }
             } catch (Throwable t) {
                 Log.e(TAG, "Well that's not good.", t);
@@ -226,7 +226,7 @@ public class ClientList extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(JSONObject jsonObject) {
+        public void onSuccess(JSONObject jsonObject, String identifier) {
             String clientIp = "Empty";
             String battery = "Empty";
             String deviceName = "Empty";
@@ -243,7 +243,7 @@ public class ClientList extends AppCompatActivity {
         }
 
         @Override
-        public void onFailure(VolleyError error) {
+        public void onFailure(VolleyError error, String identifier) {
             Log.e(TAG, "onFailure: " + "Client not online");
         }
     }

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:text="Slave Servers" />
+            android:text="Primary Slaves" />
 
         <ListView
             android:id="@+id/activeServers"
@@ -31,13 +31,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:text="FallBack Servers" />
+            android:text="FallBack Slaves" />
     </LinearLayout>
         <ListView
             android:id="@+id/fallbackServers"
