@@ -1,7 +1,9 @@
 package com.mobilespark.master;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -163,6 +166,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             StringBuilder inputParameter = new StringBuilder(clientIp);
             for(String key : outputMatrixStatusMap.keySet()){
                 if(outputMatrixStatusMap.get(key).equals("F")){
+                    outputMatrixStatusMap.put(key,"F");
                     inputParameter.append(" ");
                     inputParameter.append(key);
                     String[] parts = key.split("-");
@@ -171,7 +175,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                     break;
                 }
             }
-            GenerateMatrix.splitMatrixHorizontally(start,end,inputMatrixA);
+            int[][] splitA = GenerateMatrix.splitMatrixHorizontally(start,end,inputMatrixA);
+            body.put("A", Arrays.deepToString(splitA));
+            body.put("B",Arrays.deepToString(inputMatrixB));
             volleyController.makeRequest(url, body, TaskMonitor.this, inputParameter.toString());
         }
         catch (Throwable t) {
@@ -267,7 +273,27 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
     public void updateMatrix(JSONObject jsonObject, String identifier){
         // Update the output Matrix
-        outputMatrixStatusMap.put(identifier,"S");
+        String[] parts = identifier.trim().split(" ");
+        String[] range = parts[1].split("-");
+        int start = Integer.parseInt(range[0]);
+        int end = Integer.parseInt(range[1]);
+        //String result = "";
+        Gson gson = new Gson();
+        try {
+             //result = (String)jsonObject.get("result");
+            int[][] rangeoutputMatrix = gson.fromJson((JsonElement) jsonObject.get("result"), int[][].class);
+            int  k = 0;
+            for(int i = start;i<end;i++){
+                outputMatrix[i] = rangeoutputMatrix[k++];
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        outputMatrixStatusMap.put(parts[1],"S");
         for(String val : outputMatrixStatusMap.values()){
             if(val.equals("P") || val.equals("F"))
                 break;
@@ -304,6 +330,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
     @Override
     public void onFailure(VolleyError error, String identifier) {
+        String[] parts = identifier.trim().split(" ");
+        outputMatrixStatusMap.put(parts[1],"F");
         System.out.println("Error"+ error);
 
     }
