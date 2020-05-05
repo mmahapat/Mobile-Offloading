@@ -82,8 +82,10 @@ public class Server extends NanoHTTPD {
         int endY = 9;
         Gson gson = new Gson();
         JSONObject response = new JSONObject();
-
-        int[][] result = MatrixMultiplication.multiply(startX, endX, startY, endY);
+        int[][] matrixA = gson.fromJson(bodyParams.get("A"), int[][].class);
+        int[][] matrixB = gson.fromJson(bodyParams.get("B"), int[][].class);
+        Log.e(TAG, "calculateMatrixMultiplication: " + matrixA);
+        int[][] result = MatrixMultiplication.multiply(matrixA, matrixB);
         String finalResult = gson.toJson(result);
 
         try {

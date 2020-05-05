@@ -27,10 +27,8 @@ public class MatrixMultiplication {
             {"1", "2", "3", "4", "5", "6", "7", "8", "9", "1" }
     };
 
-    public static int[][] multiply(int startX, int endX, int startY, int endY) {
-        int[][] reducedA = splitMatrixHorizontally(startX, endX, matrixA);
-        int[][] reducedB = splitMatrixVertically(startY, endY, matrixB);
-        int[][] result = multiplyMatrix(reducedA, reducedB);
+    public static int[][] multiply(int[][] matrixA,int[][] matrixB) {
+        int[][] result = multiplyMatrix(matrixA, matrixB);
         return result;
     }
 
