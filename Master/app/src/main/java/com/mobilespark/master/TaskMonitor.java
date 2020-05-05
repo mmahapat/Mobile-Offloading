@@ -3,8 +3,11 @@ package com.mobilespark.master;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
+
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.widget.ListView;
 
 import com.android.volley.VolleyError;
 import com.mobilespark.master.Pojos.ClientListData;
+import com.mobilespark.master.Pojos.ClientStatData;
 import com.mobilespark.master.WebUtils.VolleyController;
 
 import org.json.JSONException;
@@ -21,8 +25,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +44,16 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private Map<String, int[]> fallbackClientMap;
     private Button _assignTaskButton;
     private Button _mergeTaskButton;
+    private Button _useMasterButton;
     private int slaves;
     private int[][] inputMatrixA;
     private int[][] inputMatrixB;
     private int[][] outputMatrix;
     //key: "0-250" value: "S": Success, "F": Failure, "P": Pending
     private Map<String,String> outputMatrixStatusMap;
+
+    //for debugging
+    public static List<ClientStatData> statsData;
 
 
     @Override
@@ -59,6 +67,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         fallbackServerslist = findViewById(R.id.fallbackServers);
         _assignTaskButton = findViewById(R.id.assignbutton);
         _mergeTaskButton = findViewById(R.id.mergebutton);
+        _useMasterButton = findViewById(R.id.useMasterButton);
 
         int i = 0;
 
@@ -66,6 +75,11 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         fallbackClientData = new ArrayList<>();
         activeClientMap = new HashMap<>();
         fallbackClientMap = new HashMap<>();
+
+        //For debugging
+        statsData = new ArrayList<>();
+        inputMatrixA = GenerateMatrix.createMatrix(299, 299);
+        inputMatrixB = GenerateMatrix.createMatrix(299, 299);
 
         //Sort in Decreasing battery power
         Collections.sort(clientData,new BatteryComparator());
@@ -108,18 +122,50 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             }
         });
 
+        _useMasterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                BatteryManager bm = (BatteryManager) getSystemService(Context.BATTERY_SERVICE);
+
+                int initPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
+                long start = Calendar.getInstance().getTimeInMillis();
+                GenerateMatrix.multiplyMatrix(inputMatrixA, inputMatrixB);
+                long end = Calendar.getInstance().getTimeInMillis();
+                int finalPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
+
+                float powerConsumed = (initPower - finalPower) / 3600;
+                int timeTaken = (int)(end - start);
+                Log.i("Power consumed", Float.toString(powerConsumed));
+
+                //------------------------Debugging purposes------------------------------
+                ClientStatData data = new ClientStatData("master", powerConsumed, timeTaken);
+                statsData.add(data);
+                //----------------------------end-----------------------------------------
+
+                Intent statistics = new Intent(TaskMonitor.this, ResultStatistics.class);
+                startActivity(statistics);
+
+            }
+        });
+
         _mergeTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mergeMatrix();
+
+                Intent statScreen = new Intent(TaskMonitor.this, ResultStatistics.class);
+
+                startActivity(statScreen);
             }
         });
 
     }
 
-    public void mergeMatrix(){
+    public void mergeMatrix() {
 
     }
+
     public void initliaizeMatrixParams(int size){
         inputMatrixA = GenerateMatrix.createMatrix(size,size);
         inputMatrixB = GenerateMatrix.createMatrix(size,size);
@@ -177,7 +223,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             }
             int[][] splitA = GenerateMatrix.splitMatrixHorizontally(start,end,inputMatrixA);
             body.put("A", Arrays.deepToString(splitA));
-            body.put("B",Arrays.deepToString(inputMatrixB));
+            body.put("B", Arrays.deepToString(inputMatrixB));
             volleyController.makeRequest(url, body, TaskMonitor.this, inputParameter.toString());
         }
         catch (Throwable t) {
@@ -257,7 +303,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
                 //activeServerslist.getChildAt(pos).setBackgroundColor(Color.YELLOW);
 
-
                 addtoTaskqueue(pos);
 
             }
@@ -306,10 +351,12 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     @Override
     public void onSuccess(JSONObject jsonObject, String identifier) {
         String clientIp = "Empty";
-
+        String powerConsumed = null;
+        String timeTaken = null;
         try {
             clientIp = (String) jsonObject.get("ip");
-
+            powerConsumed = (String) jsonObject.get("power_consumed");
+            timeTaken = (String) jsonObject.get("execution_time");
         } catch (JSONException e) {
             Log.e(TAG, "onSuccess: " + "Could not pass JSON");
         }

@@ -9,4 +9,9 @@
         <item name="android:fontFamily">sans-serif-black</item>
     </style>
 
+    <style name="AppTheme.popup">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
 </resources>
