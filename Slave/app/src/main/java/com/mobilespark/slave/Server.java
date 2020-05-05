@@ -64,6 +64,8 @@ public class Server extends NanoHTTPD {
                 switch (uri) {
                     case "/ping":
                         return ping(bodyParams);
+                    case "/unregister":
+                        return unRegister();
                     case "/status":
                         return status(bodyParams);
                     case "/calculate":
@@ -74,6 +76,11 @@ public class Server extends NanoHTTPD {
                 Log.e(TAG, "serve: " + "Error in serving");
                 return newFixedLengthResponse(Response.Status.NOT_IMPLEMENTED, NanoHTTPD.MIME_PLAINTEXT, "HTTP " + method);
         }
+    }
+
+    private Response unRegister() {
+        changeStatusOfClient(null);
+        return newFixedLengthResponse("ok");
     }
 
     private Response calculateMatrixMultiplication(Map<String, String> bodyParams) {
