@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +77,8 @@ public class Server extends NanoHTTPD {
     }
 
     private Response calculateMatrixMultiplication(Map<String, String> bodyParams) {
+
+        BatteryManager bm = (BatteryManager) applicationContext.getSystemService(Context.BATTERY_SERVICE);
         int startX = 0;
         int endX = 4;
         int startY = 5;
@@ -85,11 +88,19 @@ public class Server extends NanoHTTPD {
         int[][] matrixA = gson.fromJson(bodyParams.get("A"), int[][].class);
         int[][] matrixB = gson.fromJson(bodyParams.get("B"), int[][].class);
         Log.e(TAG, "calculateMatrixMultiplication: " + matrixA);
+
+        int initPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
+        long start = Calendar.getInstance().getTimeInMillis();
         int[][] result = MatrixMultiplication.multiply(matrixA, matrixB);
+        long end = Calendar.getInstance().getTimeInMillis();
+        int finalPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
+
         String finalResult = gson.toJson(result);
+        float powerConsumed = ( initPower - finalPower ) / 3600;
 
         try {
-            response.put("power_consumed", "12");
+            response.put("power_consumed", powerConsumed);
+            response.put("execution_time", end - start);
             response.put("result", finalResult);
         } catch (JSONException e) {
             e.printStackTrace();
