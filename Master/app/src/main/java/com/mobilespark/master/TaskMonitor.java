@@ -78,8 +78,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         //For debugging
         statsData = new ArrayList<>();
-        inputMatrixA = GenerateMatrix.createMatrix(299, 299);
-        inputMatrixB = GenerateMatrix.createMatrix(299, 299);
+        inputMatrixA = GenerateMatrix.createMatrix(10, 10);
+        inputMatrixB = GenerateMatrix.createMatrix(10, 10);
 
         //Sort in Decreasing battery power
         Collections.sort(clientData,new BatteryComparator());
@@ -105,8 +105,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             public void onClick(View view) {
 
 
-                ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
-                ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+
 
 
                 for(int count = 0 ; count < activeClientData.size();count++) {
@@ -177,8 +176,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         for(int i = 0; i < slaves ; i++) {
             if( i == 0)
                 end += range + reminder;
-
-            end += range;
+            else
+                end += range;
             outputMatrixStatusMap.put(String.valueOf(start)+"-"+String.valueOf(end), "F");
             start = end;
         }
@@ -212,12 +211,11 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             StringBuilder inputParameter = new StringBuilder(clientIp);
             for(String key : outputMatrixStatusMap.keySet()){
                 if(outputMatrixStatusMap.get(key).equals("F")){
-                    outputMatrixStatusMap.put(key,"F");
                     inputParameter.append(" ");
                     inputParameter.append(key);
                     String[] parts = key.split("-");
                     start = Integer.parseInt(parts[0]);
-                    end = Integer.parseInt(parts[0]);
+                    end = Integer.parseInt(parts[1]);
                     break;
                 }
             }
@@ -352,7 +350,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
     @Override
     public void onSuccess(JSONObject jsonObject, String identifier) {
-        String clientIp = "Empty";
+        String[] parts = identifier.trim().split(" ");
+        String clientIp = parts[0];
         String powerConsumed = null;
         String timeTaken = null;
         try {
