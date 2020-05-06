@@ -52,7 +52,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     //key: "0-250" value: "S": Success, "F": Failure, "P": Pending
     private Map<String,String> outputMatrixStatusMap;
 
-    //for debugging
+    //Stats data
     public static List<ClientStatData> statsData;
 
 
@@ -76,10 +76,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         activeClientMap = new HashMap<>();
         fallbackClientMap = new HashMap<>();
 
-        //For debugging
+        //Stats Data
         statsData = new ArrayList<>();
-        inputMatrixA = GenerateMatrix.createMatrix(10, 10);
-        inputMatrixB = GenerateMatrix.createMatrix(10, 10);
+
 
         //Sort in Decreasing battery power
         Collections.sort(clientData,new BatteryComparator());
@@ -112,12 +111,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                     addtoTaskqueue(count);
                 }
 
-//                Handler handler = new Handler();
-//                handler.postDelayed(updatestatus, 3000);
-
-                //Initiate Matrix and Status Map
-
-                //((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
             }
         });
 
@@ -137,7 +130,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 int timeTaken = (int)(end - start);
                 Log.i("Power consumed", Float.toString(powerConsumed));
 
-                //------------------------Debugging purposes------------------------------
+                //------------------------Master Data------------------------------
                 ClientStatData data = new ClientStatData("master", powerConsumed, timeTaken);
                 statsData.add(data);
                 //----------------------------end-----------------------------------------
