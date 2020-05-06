@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -89,9 +90,9 @@ public class Server extends NanoHTTPD {
         try {
             Thread.sleep(4000);
             if (MainActivity.getInstance().getMasterName() == null) {
-                response.put("consent","no");
-            }else {
-                response.put("consent","yes");
+                response.put("consent", "no");
+            } else {
+                response.put("consent", "yes");
             }
         } catch (Exception e) {
         }
@@ -113,9 +114,23 @@ public class Server extends NanoHTTPD {
         int endY = 9;
         Gson gson = new Gson();
         JSONObject response = new JSONObject();
-        int[][] matrixA = gson.fromJson(bodyParams.get("A"), int[][].class);
-        int[][] matrixB = gson.fromJson(bodyParams.get("B"), int[][].class);
+        final int[][] matrixA = gson.fromJson(bodyParams.get("A"), int[][].class);
+        final int[][] matrixB = gson.fromJson(bodyParams.get("B"), int[][].class);
         Log.e(TAG, "calculateMatrixMultiplication: " + matrixA);
+
+        Runnable yourRunnable = new Runnable() {
+            @Override
+            public void run() {
+                int rowA = matrixA.length;
+                int columnA = matrixA[0].length;
+                int rowB = matrixB.length;
+                int columnB = matrixB[0].length;
+                String matrixSize = "" + rowA + "x" + columnA + " and " + rowB + "x" + columnB;
+                Toast.makeText(MainActivity.getInstance(), "Received Matrices of sizes" + matrixSize,
+                        Toast.LENGTH_LONG).show();
+            }
+        };
+        new Handler(Looper.getMainLooper()).post(yourRunnable);
 
         int initPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
         long start = Calendar.getInstance().getTimeInMillis();
