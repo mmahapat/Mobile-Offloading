@@ -49,13 +49,11 @@ public class ClientList extends AppCompatActivity {
     ProgressBar pb;
     TextView scanStatus;
     AsyncTask<Void, Object, Void> execute;
-    private boolean cameFromMainActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_list);
-        cameFromMainActivity = true;
         clientList = findViewById(R.id.nodelist);
         _clientsWithConsentList = findViewById(R.id.clientsWithConsent);
 
@@ -76,10 +74,6 @@ public class ClientList extends AppCompatActivity {
 
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         localIp = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-
-        execute = new NetworkDiscovery(localIp, clientList).execute();
-
-        Log.e(TAG, "onCreate: " + clientData.size());
 
         _rescanButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,16 +98,18 @@ public class ClientList extends AppCompatActivity {
                 execute = new NetworkDiscovery(localIp, clientList).execute();
             }
         });
-
+//        _rescanButton.performClick();
         _getConsentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clientWithConsentData.clear();
+                clientMap.clear();
+                ((ClientListAdapter) (_clientsWithConsentList.getAdapter())).notifyDataSetChanged();
+
                 _clientNumbers.setVisibility(View.GONE);
                 _clientNumberText.setVisibility(View.GONE);
                 _startTaskButton.setVisibility(View.GONE);
 
-                ((ClientListAdapter) (_clientsWithConsentList.getAdapter())).notifyDataSetChanged();
 
                 new GetConsentNetworkCall().execute();
             }
@@ -177,10 +173,7 @@ public class ClientList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!cameFromMainActivity) {
-            Log.e(TAG, "onResume: " + cameFromMainActivity);
-            _rescanButton.performClick();
-        }
+        _rescanButton.performClick();
     }
 
     @Override
@@ -243,6 +236,7 @@ public class ClientList extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
+                ((ClientListAdapter) (listView.getAdapter())).notifyDataSetChanged();
                 String prefix = "192.168.0.";
                 Log.d(TAG, "prefix: " + prefix);
 
@@ -262,6 +256,12 @@ public class ClientList extends AppCompatActivity {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            clearClientData();
         }
 
         @Override
@@ -286,6 +286,14 @@ public class ClientList extends AppCompatActivity {
         public void onFailure(VolleyError error, String identifier) {
             Log.e(TAG, "onFailure: " + "Client not online");
         }
+    }
+
+    private void clearClientData() {
+        clientMap.clear();
+        clientData.clear();
+        clientWithConsentData.clear();
+        ((ClientListAdapter) (_clientsWithConsentList.getAdapter())).notifyDataSetChanged();
+        ((ClientListAdapter) (clientList.getAdapter())).notifyDataSetChanged();
     }
 
 
@@ -401,10 +409,7 @@ public class ClientList extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            clientData.clear();
-            clientWithConsentData.clear();
-            ((ClientListAdapter) (_clientsWithConsentList.getAdapter())).notifyDataSetChanged();
-            ((ClientListAdapter) (clientList.getAdapter())).notifyDataSetChanged();
+            clearClientData();
         }
 
         @Override
