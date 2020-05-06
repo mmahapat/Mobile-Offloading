@@ -11,7 +11,7 @@ public class ClientListData {
         this.clientIp = clientIp;
         this.clientName = clientName;
         this.batteryPercentage = batteryPercentage;
-        this.showStatus = false;
+        this.showStatus = true;
         this.status = "";
     }
 }

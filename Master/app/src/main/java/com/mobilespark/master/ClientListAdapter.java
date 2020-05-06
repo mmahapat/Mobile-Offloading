@@ -49,14 +49,18 @@ public class ClientListAdapter extends ArrayAdapter {
             showStatusLayout.setVisibility(View.VISIBLE);
         }
         clientStatus.setText(clientData.status);
-        if (clientData.status.equalsIgnoreCase("CONNECTED") || clientData.status.equalsIgnoreCase("COMPLETED ✓")) {
+        if (clientData.status.equalsIgnoreCase("CONNECTED")
+                || clientData.status.equalsIgnoreCase("COMPLETED ✓")
+                || clientData.status.equalsIgnoreCase("AGREED")
+                || clientData.status.equalsIgnoreCase("ASSIGNED")) {
             clientStatus.setTextColor(Color.parseColor("#10b542"));
-        } else if (clientData.status.equalsIgnoreCase("ASSIGNED") || clientData.status.equalsIgnoreCase("FALLBACK")) {
-            clientStatus.setTextColor(Color.parseColor("#FFCC00"));
+        } else if (clientData.status.equalsIgnoreCase("ASSIGNED")
+                || clientData.status.equalsIgnoreCase("FALLBACK")) {
+            clientStatus.setTextColor(Color.parseColor("#fadc64"));
         } else if (clientData.status.equalsIgnoreCase("DISCONNECTED")) {
             clientStatus.setTextColor(Color.parseColor("#bf1f1f"));
         } else {
-            clientStatus.setTextColor(Color.parseColor("#FFCC00"));
+            clientStatus.setTextColor(Color.parseColor("#fadc64"));
         }
         battery.setText(clientData.batteryPercentage + "%");
         TextView clientIp = convertView.findViewById(R.id.clientIp);

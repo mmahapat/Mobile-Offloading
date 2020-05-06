@@ -277,6 +277,7 @@ public class ClientList extends AppCompatActivity {
                 Log.e(TAG, "onSuccess: " + "Could not pass JSON");
             }
             ClientListData clientListData = new ClientListData(deviceName, battery, clientIp);
+            clientListData.status = "Available";
             clientMap.put(clientIp, deviceName);
             Log.i(TAG, jsonObject.toString());
             publishProgress(clientListData, 30);
@@ -314,7 +315,14 @@ public class ClientList extends AppCompatActivity {
                     body.put("ip", localIp);
                     volleyController.makeRequest(url, body, GetConsentNetworkCall.this, clientIp);
                 }
-                Thread.sleep(7000);
+                Thread.sleep(4000);
+                //Dummy data
+//                ClientListData data = new ClientListData("MOBILE", "100.0", "192.168.0.1");
+//                data.status = "Agreed";
+//                ClientListData data1 = new ClientListData("MOBILE", "100.0", "192.168.0.2");
+//                data1.status = "Agreed";
+//                publishProgress(data, 30);
+//                publishProgress(data1, 30);
             } catch (Throwable t) {
                 Log.e(TAG, "Well that's not good.", t);
             }
@@ -367,6 +375,7 @@ public class ClientList extends AppCompatActivity {
             if (gaveConsent.equalsIgnoreCase("YES")) {
                 for (ClientListData clientListData : clientData) {
                     if (clientListData.clientIp == identifier) {
+                        clientListData.status = "Agreed";
                         publishProgress(clientListData, 30);
                         clientMap.put(identifier, clientListData.clientName);
                     }

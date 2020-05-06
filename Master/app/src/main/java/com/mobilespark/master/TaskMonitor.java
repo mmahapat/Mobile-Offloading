@@ -116,9 +116,14 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         _assignTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                _assignTaskButton.setEnabled(false);
+                _mergeTaskButton.setEnabled(false);
+                _useMasterButton.setEnabled(false);
                 Toast.makeText(TaskMonitor.this, "Sending requests",
                         Toast.LENGTH_LONG).show();
                 for (int count = 0; count < activeClientData.size(); count++) {
+                    activeClientData.get(count).status = "Assigned";
+                    ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
                     addtoTaskqueue(count);
                 }
 
@@ -333,7 +338,11 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         }
         ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
         ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
-
+        if (countOfSlave == 0) {
+            _assignTaskButton.setEnabled(true);
+            _mergeTaskButton.setEnabled(true);
+            _useMasterButton.setEnabled(true);
+        }
         updateMatrix(jsonObject, identifier);
 
     }
@@ -375,7 +384,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         if (fallbackClientData.size() > 0) {
             int pos = activeClientData.size();
             ClientListData client = fallbackClientData.get(0);
-            client.status = "Connected";
+            client.status = "Assigned";
             activeClientData.add(client);
             activeClientMap.put(client.clientIp, new int[]{pos, 0});
             fallbackClientMap.remove(client.clientIp);
@@ -384,7 +393,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         }
         ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
         ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
-
         System.out.println("Error" + error);
     }
 }

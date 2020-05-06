@@ -24,6 +24,7 @@
             android:id="@+id/activeServers"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:background="#ffffff"
             android:padding="16dp" />
     </LinearLayout>
 
@@ -44,6 +45,7 @@
             android:id="@+id/fallbackServers"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:background="#ffffff"
             android:padding="16dp" />
 
     <RelativeLayout
