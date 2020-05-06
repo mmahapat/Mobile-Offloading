@@ -6,20 +6,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.mobilespark.master.Pojos.ClientStatData;
-
-import java.util.List;
 
 public class ResultStatistics extends AppCompatActivity {
 
     ListView clientStats;
-    Button _showMatrix;
+    Button _homeButton;
     Gson gson = new Gson();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,7 +24,7 @@ public class ResultStatistics extends AppCompatActivity {
         setContentView(R.layout.activity_stat_result);
 
         clientStats = findViewById(R.id.statList);
-        _showMatrix = findViewById(R.id.showMatrix);
+        _homeButton = findViewById(R.id.homeButton);
 
         Log.i("statData", TaskMonitor.statsData.toString());
         Log.i("object", TaskMonitor.statsData.get(0).toString());
@@ -40,13 +37,23 @@ public class ResultStatistics extends AppCompatActivity {
 
         clientStats.setAdapter(adapter);
 
-        _showMatrix.setOnClickListener(new View.OnClickListener() {
+        _homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Popup.class);
-                intent.putExtra("matrix", Integer.toString(matrix.length()));
+                //Intent intent = new Intent(getApplicationContext(), Popup.class);
+                //intent.putExtra("matrix", Integer.toString(matrix.length()));
+
+                Intent intent = new Intent(ResultStatistics.this, ClientList.class);
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Cannot go back when the server is running",
+                Toast.LENGTH_LONG).show();
+        Log.e("ResultStatistics", "onBackPressed: " + "Back button pressed when server is running");
+
     }
 }
