@@ -106,6 +106,7 @@ public class Server extends NanoHTTPD {
     private Response calculateMatrixMultiplication(Map<String, String> bodyParams) {
 
         BatteryManager bm = (BatteryManager) applicationContext.getSystemService(Context.BATTERY_SERVICE);
+        float voltage = getVoltage() / 1000;
         int startX = 0;
         int endX = 4;
         int startY = 5;
@@ -123,7 +124,7 @@ public class Server extends NanoHTTPD {
         int finalPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
 
         String finalResult = gson.toJson(result);
-        float powerConsumed = (initPower - finalPower) / 3600;
+        float powerConsumed = (initPower - finalPower) * voltage / 3600;
 
         try {
             response.put("power_consumed", powerConsumed);
@@ -170,5 +171,11 @@ public class Server extends NanoHTTPD {
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
         return new Gson().fromJson(postBody, type);
+    }
+
+    private int getVoltage() {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent b = applicationContext.registerReceiver(null, ifilter);
+        return b.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
     }
 }
