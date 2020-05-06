@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mobilespark.master.Pojos.ClientListData;
@@ -35,15 +36,33 @@ public class ClientListAdapter extends ArrayAdapter {
                 }
             });
             TextView clientName = convertView.findViewById(R.id.clientName);
-            clientName.setText(clientData.clientName);
+            LinearLayout showStatusLayout = convertView.findViewById(R.id.showStatus);
             TextView battery = convertView.findViewById(R.id.battery);
+            TextView clientStatus = convertView.findViewById(R.id.clientStatus);
+
+            clientName.setText(clientData.clientName);
             double ba = Double.parseDouble(clientData.batteryPercentage);
             if (ba < 20) {
                 battery.setTextColor(Color.parseColor("#bf1f1f"));
-            } else if (ba < 70 && ba > 21) {
+            } else if (ba < 70 && ba >= 21) {
                 battery.setTextColor(Color.parseColor("#FFCC00"));
             } else {
                 battery.setTextColor(Color.parseColor("#10b542"));
+            }
+            if (clientData.showStatus) {
+                showStatusLayout.setVisibility(View.VISIBLE);
+            }
+            clientStatus.setText(clientData.status);
+            if (clientData.status.equalsIgnoreCase("CONNECTED")) {
+                clientStatus.setTextColor(Color.parseColor("#10b542"));
+            } else if (clientData.status.equalsIgnoreCase("ASSIGNED")) {
+                clientStatus.setTextColor(Color.parseColor("#FFCC00"));
+            } else if (clientData.status.equalsIgnoreCase("FALLBACK")) {
+                clientStatus.setTextColor(Color.parseColor("#FFCC00"));
+            } else if (clientData.status.equalsIgnoreCase("DISCONNECTED")) {
+                clientStatus.setTextColor(Color.parseColor("#bf1f1f"));
+            } else {
+                clientStatus.setTextColor(Color.parseColor("#FFCC00"));
             }
             battery.setText(clientData.batteryPercentage + "%");
             TextView clientIp = convertView.findViewById(R.id.clientIp);

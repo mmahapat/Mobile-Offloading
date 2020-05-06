@@ -75,6 +75,29 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="90dp"
                 android:text="Mobile 1" />
+            <LinearLayout
+                android:id="@+id/showStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:visibility="gone"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status : " />
+
+                <TextView
+                    android:id="@+id/clientStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="#10b542"
+                    android:text="Connected" />
+            </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
