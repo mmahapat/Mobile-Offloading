@@ -115,6 +115,15 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         _useMasterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Calculate total Slave Data
+                float totalPowerConsumed = 0;
+                long totalTimeTaken = 0;
+                for(ClientStatData csData: statsData){
+                    totalPowerConsumed += csData.powerConsumed;
+                    totalTimeTaken += csData.timeTaken;
+                }
+                // Add total Data
+                statsData.add(new ClientStatData("All Clients", totalPowerConsumed, totalTimeTaken));
 
                 BatteryManager bm = (BatteryManager) getSystemService(Context.BATTERY_SERVICE);
 
@@ -127,7 +136,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 float powerConsumed = (initPower - finalPower) / 3600;
                 int timeTaken = (int) (end - start);
                 Log.i("Power consumed", Float.toString(powerConsumed));
-                ClientStatData data = new ClientStatData("master", powerConsumed, timeTaken);
+                ClientStatData data = new ClientStatData("Master", powerConsumed, timeTaken);
                 statsData.add(data);
                 Intent statistics = new Intent(TaskMonitor.this, ResultStatistics.class);
                 startActivity(statistics);

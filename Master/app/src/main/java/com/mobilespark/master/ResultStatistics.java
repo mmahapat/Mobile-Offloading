@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 public class ResultStatistics extends AppCompatActivity {
 
     ListView clientStats;
+    ListView otherStats;
     Button _homeButton;
     Gson gson = new Gson();
     @Override
@@ -24,6 +25,7 @@ public class ResultStatistics extends AppCompatActivity {
         setContentView(R.layout.activity_stat_result);
 
         clientStats = findViewById(R.id.statList);
+        otherStats = findViewById(R.id.statList2);
         _homeButton = findViewById(R.id.homeButton);
 
         Log.i("statData", TaskMonitor.statsData.toString());
@@ -32,10 +34,12 @@ public class ResultStatistics extends AppCompatActivity {
         Log.i("power", Float.toString(TaskMonitor.statsData.get(0).powerConsumed));
         Log.i("time", Long.toString(TaskMonitor.statsData.get(0).timeTaken));
 
-        ClientStatsAdapter adapter = new ClientStatsAdapter(this, TaskMonitor.statsData );
+        ClientStatsAdapter adapter = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(0,TaskMonitor.statsData.size()-2) );
+        ClientStatsAdapter adapter2 = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(TaskMonitor.statsData.size()-2,TaskMonitor.statsData.size()) );
         final String matrix = gson.toJson(GenerateMatrix.createMatrix(1000, 1000));
 
         clientStats.setAdapter(adapter);
+        otherStats.setAdapter(adapter2);
 
         _homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
