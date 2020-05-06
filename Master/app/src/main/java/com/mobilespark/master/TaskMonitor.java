@@ -50,6 +50,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private int[][] inputMatrixA;
     private int[][] inputMatrixB;
     private int[][] outputMatrix;
+    private int countOfSlave;
     //key: "0-250" value: "S": Success, "F": Failure, "P": Pending
     private Map<String, String> outputMatrixStatusMap;
     public static boolean flagmaster = false;
@@ -70,7 +71,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         _assignTaskButton = findViewById(R.id.assignbutton);
         _mergeTaskButton = findViewById(R.id.mergebutton);
         _useMasterButton = findViewById(R.id.useMasterButton);
-
+        _assignTaskButton.setEnabled(false);
+        _mergeTaskButton.setEnabled(false);
+        _useMasterButton.setEnabled(false);
         int i = 0;
 
         activeClientData = new ArrayList<>();
@@ -84,12 +87,21 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         //Sort in Decreasing battery power
         Collections.sort(clientData, new BatteryComparator());
-        while (i < slaves && i < clientData.size())
-            activeClientData.add(clientData.get(i++));
+        countOfSlave = slaves;
+        while (i < slaves && i < clientData.size()) {
+            ClientListData client = clientData.get(i++);
+            client.showStatus = true;
+            client.status = "Connected";
+            activeClientData.add(client);
+        }
 
 
-        while (i < clientData.size())
-            fallbackClientData.add(clientData.get(i++));
+        while (i < clientData.size()) {
+            ClientListData client = clientData.get(i++);
+            client.showStatus = true;
+            client.status = "Fallback";
+            fallbackClientData.add(client);
+        }
 
 
         ClientListAdapter activeServerAdapter = new ClientListAdapter(this, activeClientData);
@@ -104,8 +116,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         _assignTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                Toast.makeText(TaskMonitor.this, "Sending requests",
+                        Toast.LENGTH_LONG).show();
                 for (int count = 0; count < activeClientData.size(); count++) {
                     addtoTaskqueue(count);
                 }
@@ -121,7 +133,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 //Calculate total Slave Data
                 float totalPowerConsumed = 0;
                 long totalTimeTaken = 0;
-                for(ClientStatData csData: statsData){
+                for (ClientStatData csData : statsData) {
                     totalPowerConsumed += csData.powerConsumed;
                     totalTimeTaken += csData.timeTaken;
                 }
@@ -151,10 +163,14 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             @Override
             public void onClick(View view) {
                 flagmaster = true;
+                if (countOfSlave != 0) {
+                    Log.e(TAG, "onClick: " + "Everything not completed");
+                    return;
+                }
                 //Calculate total Slave Data
                 float totalPowerConsumed = 0;
                 long totalTimeTaken = 0;
-                for(ClientStatData csData: statsData){
+                for (ClientStatData csData : statsData) {
                     totalPowerConsumed += csData.powerConsumed;
                     totalTimeTaken += csData.timeTaken;
                 }
@@ -171,18 +187,22 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     //Set background color to Yellow and gray for Slave and Fallback Servers
     private Runnable loaddata = new Runnable() {
         public void run() {
+            Toast.makeText(TaskMonitor.this, "Setting up everything...Please wait",
+                    Toast.LENGTH_LONG).show();
             for (int count = 0; count < activeClientData.size(); count++) {
-
-                getViewByPosition(count, activeServerslist).setBackgroundColor(Color.YELLOW);
                 activeClientMap.put(activeClientData.get(count).clientIp, new int[]{count, 0});
             }
             for (int count = 0; count < fallbackClientData.size(); count++) {
-
-                getViewByPosition(count, fallbackServerslist).setBackgroundColor(Color.GRAY);
                 fallbackClientMap.put(fallbackClientData.get(count).clientIp, new int[]{count, 0});
             }
 
             initializeMatrixParams(300);
+            _assignTaskButton.setEnabled(true);
+            _mergeTaskButton.setEnabled(true);
+            _useMasterButton.setEnabled(true);
+
+            Toast.makeText(TaskMonitor.this, "Setup done!",
+                    Toast.LENGTH_LONG).show();
         }
     };
 
@@ -303,8 +323,12 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         if (activeClientMap.containsKey(clientIp)) {
             int[] data = activeClientMap.get(clientIp);
-
-            getViewByPosition(data[0], activeServerslist).setBackgroundColor(Color.GREEN);
+            countOfSlave--;
+            for (ClientListData clientListData : activeClientData) {
+                if (clientIp.equalsIgnoreCase(clientListData.clientIp)) {
+                    clientListData.status = "Completed ✓";
+                }
+            }
             activeClientMap.put(clientIp, new int[]{data[0], 1});
         }
         ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
@@ -323,7 +347,12 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         //Update the Error Status
         if (activeClientMap.containsKey(clientIp)) {
             int[] data = activeClientMap.get(clientIp);
-            getViewByPosition(data[0], activeServerslist).setBackgroundColor(Color.RED);
+            for (ClientListData clientListData : activeClientData) {
+                if (clientIp.equalsIgnoreCase(clientListData.clientIp)) {
+                    clientListData.status = "Disconnected";
+                }
+            }
+//            getViewByPosition(data[0], activeServerslist).setBackgroundColor(Color.RED);
             activeClientMap.put(clientIp, new int[]{data[0], 0});
         }
 
@@ -333,9 +362,11 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         //Fallback if there is  available client
         if (fallbackClientData.size() > 0) {
             int pos = activeClientData.size();
-            activeClientData.add(fallbackClientData.get(0));
-            activeClientMap.put(fallbackClientData.get(0).clientIp, new int[]{pos, 0});
-            fallbackClientMap.remove(fallbackClientData.get(0).clientIp);
+            ClientListData client = fallbackClientData.get(0);
+            client.status = "Connected";
+            activeClientData.add(client);
+            activeClientMap.put(client.clientIp, new int[]{pos, 0});
+            fallbackClientMap.remove(client.clientIp);
             fallbackClientData.remove(0);
             addtoTaskqueue(pos);
         }
