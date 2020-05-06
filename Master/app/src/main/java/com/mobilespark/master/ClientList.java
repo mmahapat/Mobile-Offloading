@@ -26,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,6 +37,7 @@ public class ClientList extends AppCompatActivity {
     private String localIp = "";
     private ListView list;
     public static ArrayList<ClientListData> clientData = new ArrayList<>();
+    public static Map<String, String> clientMap = new HashMap<>();
     private Button _startTaskButton;
     private ImageButton _rescanButton;
     private ImageButton _stopServer;
@@ -238,6 +241,7 @@ public class ClientList extends AppCompatActivity {
                 Log.e(TAG, "onSuccess: " + "Could not pass JSON");
             }
             ClientListData clientListData = new ClientListData(deviceName, battery, clientIp);
+            clientMap.put(clientIp, deviceName);
             Log.i(TAG, jsonObject.toString());
             publishProgress(clientListData, 30);
         }

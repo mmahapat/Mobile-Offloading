@@ -154,7 +154,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 mergeMatrix();
 
                 Intent statScreen = new Intent(TaskMonitor.this, ResultStatistics.class);
-
                 startActivity(statScreen);
             }
         });
@@ -358,6 +357,11 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             clientIp = (String) jsonObject.get("ip");
             powerConsumed = (String) jsonObject.get("power_consumed");
             timeTaken = (String) jsonObject.get("execution_time");
+
+            ClientStatData clientData = new ClientStatData(ClientList.clientMap.get(clientIp),
+                    Float.valueOf(powerConsumed), Long.valueOf(timeTaken));
+            statsData.add(clientData);
+
         } catch (JSONException e) {
             Log.e(TAG, "onSuccess: " + "Could not pass JSON");
         }
@@ -368,7 +372,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.GREEN);
             activeClientMap.put(clientIp,new int[]{data[0],1});
         }
-
         ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
         ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
 
