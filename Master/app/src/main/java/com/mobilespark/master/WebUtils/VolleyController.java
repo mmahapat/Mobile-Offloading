@@ -2,6 +2,7 @@ package com.mobilespark.master.WebUtils;
 
 import android.content.Context;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -11,6 +12,8 @@ import com.android.volley.toolbox.Volley;
 import com.mobilespark.master.ClientResponse;
 
 import org.json.JSONObject;
+
+import java.util.concurrent.TimeUnit;
 
 public class VolleyController {
     private static VolleyController mInstance;
@@ -56,6 +59,10 @@ public class VolleyController {
                         clientResponse.onFailure(error, identifier);
                     }
                 });
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                (int) TimeUnit.SECONDS.toMillis(10),
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         addToRequestQueue(jsonObjectRequest);
     }
 
