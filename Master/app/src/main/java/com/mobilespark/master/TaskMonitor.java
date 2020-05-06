@@ -201,10 +201,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 //            url = "http://192.168.0.6:8080/calculate";
             VolleyController volleyController = new VolleyController(getApplicationContext());
             JSONObject body = new JSONObject();
-//            body.put("startX", 0);
-////            body.put("endX", 4);
-////            body.put("startY", 5);
-////            body.put("endY", 9);
             int start = 0;
             int end = 0;
             StringBuilder inputParameter = new StringBuilder(clientIp);
@@ -420,8 +416,5 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
 
         System.out.println("Error"+ error);
-
     }
-
-
 }

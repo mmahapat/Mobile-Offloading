@@ -3,6 +3,8 @@ package com.mobilespark.slave;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -20,15 +22,22 @@ import fi.iki.elonen.NanoHTTPD;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public Server server;
+    public String masterName;
     private ImageButton imgButton;
     private TextView status;
     TextView master;
     private boolean serverRunning = false;
+    private static MainActivity instance;
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
         imgButton = findViewById(R.id.startStopButton);
         status = findViewById(R.id.status);
         master = findViewById(R.id.master);
@@ -40,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!serverRunning) {
                     try {
-                        server = new Server(getApplicationContext(), ip , master);
+                        server = new Server(getApplicationContext(), ip, master);
                         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
                         Toast.makeText(MainActivity.this, "Client Started",
                                 Toast.LENGTH_LONG).show();
@@ -67,6 +76,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void showMainDialog(final String ip) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+        builder1.setMessage(ip + " wants to assign task of matrix multiplication!");
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(
+                "Give Permission",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        changeStatusOfClient(ip);
+                        dialog.cancel();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "Deny",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        changeStatusOfClient(null);
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
     private void changeStatus() {
         if (serverRunning) {
             imgButton.setImageResource(R.drawable.poweroff);
@@ -88,5 +122,22 @@ public class MainActivity extends AppCompatActivity {
         if (server != null)
             server.stop();
         Log.d(TAG, "onCreate: Stopping server");
+    }
+
+    public String getMaster() {
+        return masterName;
+    }
+
+    private void changeStatusOfClient(String masterIP) {
+        if (masterIP == null) {
+            masterName = null;
+            master.setText("Not Connected to Master");
+            master.setTextColor(Color.parseColor("#bf1f1f"));
+        } else {
+            String text = "Connected to : " + masterIP;
+            masterName = masterIP;
+            master.setText(text);
+            master.setTextColor(Color.parseColor("#10b542"));
+        }
     }
 }
