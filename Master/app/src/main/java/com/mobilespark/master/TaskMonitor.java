@@ -78,8 +78,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         //For debugging
         statsData = new ArrayList<>();
-        inputMatrixA = GenerateMatrix.createMatrix(299, 299);
-        inputMatrixB = GenerateMatrix.createMatrix(299, 299);
+        //inputMatrixA = GenerateMatrix.createMatrix(299, 299);
+        //inputMatrixB = GenerateMatrix.createMatrix(299, 299);
 
         //Sort in Decreasing battery power
         Collections.sort(clientData,new BatteryComparator());
@@ -113,11 +113,11 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                     addtoTaskqueue(count);
                 }
 
-                Handler handler = new Handler();
-                handler.postDelayed(updatestatus, 3000);
+//                Handler handler = new Handler();
+//                handler.postDelayed(updatestatus, 3000);
 
                 //Initiate Matrix and Status Map
-                initliaizeMatrixParams(1000);
+
                 //((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
             }
         });
@@ -242,79 +242,81 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 getViewByPosition(count,fallbackServerslist).setBackgroundColor(Color.GRAY);
                 fallbackClientMap.put(fallbackClientData.get(count).clientIp, new int[]{count,0});
             }
+
+            initliaizeMatrixParams(10);
         }
     };
 
+//
+//    private Runnable updatestatus = new Runnable() {
+//        public void run() {
+//            // Mark failed servers as red based on timeout
+//            for (int count = 0; count < activeClientData.size(); count++) {
+//                int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
+//
+//                if(data[1] == 0){
+//                    //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+//                    getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
+//                }
+//            }
+//            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+//            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+//
+//            Handler handler = new Handler();
+//            handler.postDelayed(fallback, 3000);
+//
+//        }
+//    };
+//    private Runnable updatestatus2 = new Runnable() {
+//        public void run() {
+//            // Mark failed servers as red based on timeout
+//            for (int count = 0; count < activeClientData.size(); count++) {
+//                int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
+//
+//                if(data[1] == 0){
+//                    //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
+//                    getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
+//
+//                }
+//            }
+//            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+//            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+//
+//        }
+//    };
 
-    private Runnable updatestatus = new Runnable() {
-        public void run() {
-            // Mark failed servers as red based on timeout
-            for (int count = 0; count < activeClientData.size(); count++) {
-                int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
-
-                if(data[1] == 0){
-                    //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
-                    getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
-                }
-            }
-            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
-            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
-
-            Handler handler = new Handler();
-            handler.postDelayed(fallback, 3000);
-
-        }
-    };
-    private Runnable updatestatus2 = new Runnable() {
-        public void run() {
-            // Mark failed servers as red based on timeout
-            for (int count = 0; count < activeClientData.size(); count++) {
-                int[] data = activeClientMap.get(activeClientData.get(count).clientIp);
-
-                if(data[1] == 0){
-                    //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.RED);
-                    getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
-
-                }
-            }
-            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
-            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
-
-        }
-    };
-
-    private Runnable fallback = new Runnable() {
-        public void run() {
-
-            //Check number of failed Servers
-            List<Integer> activeServers = new ArrayList<>();
-            for(String key: activeClientMap.keySet()){
-                int[]data = activeClientMap.get(key);
-                if(data[1] == 1)
-                    activeServers.add(data[0]);
-            }
-            //Move fallbackClientData  into activeClientData
-            for(int i = 0; i < (slaves -activeServers.size()) && i < fallbackClientData.size(); i++){
-                int pos = activeClientData.size();
-                activeClientData.add(fallbackClientData.get(0));
-                activeClientMap.put(fallbackClientData.get(0).clientIp, new int[]{pos,0});
-                fallbackClientMap.remove(fallbackClientData.get(0).clientIp);
-                fallbackClientData.remove(0);
-
-                //activeServerslist.getChildAt(pos).setBackgroundColor(Color.YELLOW);
-
-                addtoTaskqueue(pos);
-
-            }
-
-            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
-            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
-            Handler handler = new Handler();
-            handler.postDelayed(updatestatus2, 3000);
-
-
-        }
-    };
+//    private Runnable fallback = new Runnable() {
+//        public void run() {
+//
+//            //Check number of failed Servers
+//            List<Integer> activeServers = new ArrayList<>();
+//            for(String key: activeClientMap.keySet()){
+//                int[]data = activeClientMap.get(key);
+//                if(data[1] == 1)
+//                    activeServers.add(data[0]);
+//            }
+//            //Move fallbackClientData  into activeClientData
+//            for(int i = 0; i < (slaves -activeServers.size()) && i < fallbackClientData.size(); i++){
+//                int pos = activeClientData.size();
+//                activeClientData.add(fallbackClientData.get(0));
+//                activeClientMap.put(fallbackClientData.get(0).clientIp, new int[]{pos,0});
+//                fallbackClientMap.remove(fallbackClientData.get(0).clientIp);
+//                fallbackClientData.remove(0);
+//
+//                //activeServerslist.getChildAt(pos).setBackgroundColor(Color.YELLOW);
+//
+//                addtoTaskqueue(pos);
+//
+//            }
+//
+//            ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+//            ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+//            Handler handler = new Handler();
+//            handler.postDelayed(updatestatus2, 3000);
+//
+//
+//        }
+//    };
 
     public void updateMatrix(JSONObject jsonObject, String identifier){
         // Update the output Matrix
@@ -379,6 +381,42 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     public void onFailure(VolleyError error, String identifier) {
         String[] parts = identifier.trim().split(" ");
         outputMatrixStatusMap.put(parts[1],"F");
+
+        String clientIp = parts[0];
+        if(activeClientMap.containsKey(clientIp)) {
+            int[] data = activeClientMap.get(clientIp);
+            //activeServerslist.getChildAt(data[0]).setBackgroundColor(Color.GREEN);
+            getViewByPosition(data[0],activeServerslist).setBackgroundColor(Color.RED);
+            activeClientMap.put(clientIp,new int[]{data[0],0});
+        }
+
+        ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+        ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+
+        //Check number of failed Servers
+        List<Integer> activeServers = new ArrayList<>();
+        for(String key: activeClientMap.keySet()){
+            int[]data = activeClientMap.get(key);
+            if(data[1] == 1)
+                activeServers.add(data[0]);
+        }
+        //Move fallbackClientData  into activeClientData
+        for(int i = 0; i < (slaves -activeServers.size()) && i < fallbackClientData.size(); i++){
+            int pos = activeClientData.size();
+            activeClientData.add(fallbackClientData.get(0));
+            activeClientMap.put(fallbackClientData.get(0).clientIp, new int[]{pos,0});
+            fallbackClientMap.remove(fallbackClientData.get(0).clientIp);
+            fallbackClientData.remove(0);
+
+            //activeServerslist.getChildAt(pos).setBackgroundColor(Color.YELLOW);
+
+            addtoTaskqueue(pos);
+
+        }
+
+        ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
+        ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
+
         System.out.println("Error"+ error);
 
     }
