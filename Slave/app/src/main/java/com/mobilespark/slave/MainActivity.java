@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void showMainDialog(final String ip) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-        builder1.setMessage(ip + " wants to assign task of matrix multiplication!");
+        builder1.setMessage(ip + " wants to assign task of matrix multiplication. Will use your battery information.");
         builder1.setCancelable(true);
         builder1.setPositiveButton(
                 "Give Permission",
