@@ -52,6 +52,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private int[][] outputMatrix;
     //key: "0-250" value: "S": Success, "F": Failure, "P": Pending
     private Map<String, String> outputMatrixStatusMap;
+    public static boolean flagmaster = false;
 
     //Stats data
     public static List<ClientStatData> statsData;
@@ -115,6 +116,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         _useMasterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                flagmaster = true;
                 //Calculate total Slave Data
                 float totalPowerConsumed = 0;
                 long totalTimeTaken = 0;
@@ -147,6 +150,16 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         _mergeTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                flagmaster = true;
+                //Calculate total Slave Data
+                float totalPowerConsumed = 0;
+                long totalTimeTaken = 0;
+                for(ClientStatData csData: statsData){
+                    totalPowerConsumed += csData.powerConsumed;
+                    totalTimeTaken += csData.timeTaken;
+                }
+                // Add total Data
+                statsData.add(new ClientStatData("All Clients", totalPowerConsumed, totalTimeTaken));
 
                 Intent statScreen = new Intent(TaskMonitor.this, ResultStatistics.class);
                 startActivity(statScreen);
