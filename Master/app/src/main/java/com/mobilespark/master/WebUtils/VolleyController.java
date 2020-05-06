@@ -60,7 +60,7 @@ public class VolleyController {
                     }
                 });
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                (int) TimeUnit.SECONDS.toMillis(10),
+                (int) TimeUnit.SECONDS.toMillis(30),
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         addToRequestQueue(jsonObjectRequest);
