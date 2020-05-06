@@ -1,7 +1,9 @@
 package com.mobilespark.master;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,12 +14,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+
 import com.android.volley.VolleyError;
 import com.mobilespark.master.Pojos.ClientListData;
 import com.mobilespark.master.Pojos.ClientStatData;
 import com.mobilespark.master.WebUtils.VolleyController;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -55,7 +60,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_monitor);
-        clientData = ClientList.clientData;
+        clientData = ClientList.clientWithConsentData;
         slaves = getIntent().getExtras().getInt("Slaves");
 
         activeServerslist = findViewById(R.id.activeServers);
