@@ -78,8 +78,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         //For debugging
         statsData = new ArrayList<>();
-        //inputMatrixA = GenerateMatrix.createMatrix(299, 299);
-        //inputMatrixB = GenerateMatrix.createMatrix(299, 299);
+        inputMatrixA = GenerateMatrix.createMatrix(299, 299);
+        inputMatrixB = GenerateMatrix.createMatrix(299, 299);
 
         //Sort in Decreasing battery power
         Collections.sort(clientData,new BatteryComparator());
