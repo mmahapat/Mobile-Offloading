@@ -35,7 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ClientList extends AppCompatActivity {
     private static final String TAG = "ClientList";
     private String localIp = "";
-    private ListView list;
+    private ListView clientList;
     private ListView _clientsWithConsentList;
     public static ArrayList<ClientListData> clientData = new ArrayList<>();
     public static ArrayList<ClientListData> clientWithConsentData = new ArrayList<>();
@@ -56,7 +56,7 @@ public class ClientList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_list);
         cameFromMainActivity = true;
-        list = findViewById(R.id.nodelist);
+        clientList = findViewById(R.id.nodelist);
         _clientsWithConsentList = findViewById(R.id.clientsWithConsent);
 
         _startTaskButton = findViewById(R.id.startTask);
@@ -69,7 +69,7 @@ public class ClientList extends AppCompatActivity {
         _getConsentButton = findViewById(R.id.getConsent);
 
         ClientListAdapter adapter = new ClientListAdapter(this, clientData);
-        list.setAdapter(adapter);
+        clientList.setAdapter(adapter);
 
         ClientListAdapter consent = new ClientListAdapter(this, clientWithConsentData);
         _clientsWithConsentList.setAdapter(consent);
@@ -77,7 +77,7 @@ public class ClientList extends AppCompatActivity {
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         localIp = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
-        execute = new NetworkDiscovery(localIp, list).execute();
+        execute = new NetworkDiscovery(localIp, clientList).execute();
 
         Log.e(TAG, "onCreate: " + clientData.size());
 
@@ -88,7 +88,7 @@ public class ClientList extends AppCompatActivity {
                 _getConsentButton.setVisibility(View.GONE);
 
                 clientData.clear();
-                ((ClientListAdapter) (list.getAdapter())).notifyDataSetChanged();
+                ((ClientListAdapter) (clientList.getAdapter())).notifyDataSetChanged();
 
                 clientWithConsentData.clear();
                 ((ClientListAdapter) (_clientsWithConsentList.getAdapter())).notifyDataSetChanged();
@@ -101,7 +101,7 @@ public class ClientList extends AppCompatActivity {
                 pb.setVisibility(View.VISIBLE);
                 scanStatus.setVisibility(View.VISIBLE);
                 scanStatus.setText("Scanning : 0%");
-                execute = new NetworkDiscovery(localIp, list).execute();
+                execute = new NetworkDiscovery(localIp, clientList).execute();
             }
         });
 
@@ -132,11 +132,8 @@ public class ClientList extends AppCompatActivity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     execute.cancel(true);
-                                    if (MainActivity.server != null)
-                                        MainActivity.server.stop();
+                                    closeServerAndDeregister();
                                     dialog.cancel();
-                                    MainActivity.serverRunning = false;
-                                    ClientList.super.onBackPressed();
                                 }
                             });
 
@@ -151,10 +148,7 @@ public class ClientList extends AppCompatActivity {
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
                 } else {
-                    if (MainActivity.server != null)
-                        MainActivity.server.stop();
-                    MainActivity.serverRunning = false;
-                    ClientList.super.onBackPressed();
+                    closeServerAndDeregister();
                 }
             }
         });
@@ -170,6 +164,14 @@ public class ClientList extends AppCompatActivity {
                 startActivity(taskMonitorScreen);
             }
         });
+    }
+
+    private void closeServerAndDeregister() {
+        if (MainActivity.server != null)
+            MainActivity.server.stop();
+        new DeregisterClients().execute();
+        MainActivity.serverRunning = false;
+        ClientList.super.onBackPressed();
     }
 
     @Override
@@ -304,13 +306,9 @@ public class ClientList extends AppCompatActivity {
                     body.put("ip", localIp);
                     volleyController.makeRequest(url, body, GetConsentNetworkCall.this, clientIp);
                 }
+                Thread.sleep(7000);
             } catch (Throwable t) {
                 Log.e(TAG, "Well that's not good.", t);
-            }
-            try {
-                Thread.sleep(7000);
-            } catch (InterruptedException e) {
-                Log.e(TAG, String.valueOf(e), e);
             }
             return null;
         }
@@ -374,6 +372,49 @@ public class ClientList extends AppCompatActivity {
         @Override
         public void onFailure(VolleyError error, String identifier) {
             Log.e(TAG, "onFailure: " + "Client not online");
+        }
+    }
+
+
+    class DeregisterClients extends AsyncTask<Void, Object, Void> implements ClientResponse {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                Log.e(TAG, "doInBackground: " + clientWithConsentData.size());
+                for (ClientListData client : clientWithConsentData) {
+                    if (isCancelled()) break;
+                    String clientIp = client.clientIp;
+                    String url = "http://" + clientIp + ":8080/unregister";
+                    Log.e(TAG, "doInBackground: " + url);
+                    VolleyController volleyController = new VolleyController(getApplicationContext());
+                    JSONObject body = new JSONObject();
+                    body.put("ip", localIp);
+                    volleyController.makeRequest(url, body, DeregisterClients.this, clientIp);
+                }
+            } catch (Throwable t) {
+                Log.e(TAG, "Well that's not good.", t);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            clientData.clear();
+            clientWithConsentData.clear();
+            ((ClientListAdapter) (_clientsWithConsentList.getAdapter())).notifyDataSetChanged();
+            ((ClientListAdapter) (clientList.getAdapter())).notifyDataSetChanged();
+        }
+
+        @Override
+        public void onSuccess(JSONObject jsonObject, String identifier) {
+            Log.d(TAG, "onSuccess: Unregister : " + identifier);
+        }
+
+        @Override
+        public void onFailure(VolleyError error, String identifier) {
+
         }
     }
 }
