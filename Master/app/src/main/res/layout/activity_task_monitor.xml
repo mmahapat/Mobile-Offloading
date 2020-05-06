@@ -73,6 +73,6 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="center"
             android:layout_marginRight="172dp"
-            android:text="USE MASTER" />
+            android:text="SELF" />
     </RelativeLayout>
 </LinearLayout>

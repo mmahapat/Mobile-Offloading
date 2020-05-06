@@ -43,8 +43,14 @@ public class ResultStatistics extends AppCompatActivity {
         _showMatrix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Popup.class);
-                intent.putExtra("matrix", Integer.toString(matrix.length()));
+
+                if(MainActivity.serverRunning) {
+                    MainActivity.server.stop();
+                    MainActivity.serverRunning = false;
+                    ClientList.clientData.clear();
+                }
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                //intent.putExtra("matrix", Integer.toString(matrix.length()));
                 startActivity(intent);
             }
         });

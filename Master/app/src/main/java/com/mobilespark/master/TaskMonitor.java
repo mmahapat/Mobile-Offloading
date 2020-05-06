@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.android.volley.VolleyError;
 import com.mobilespark.master.Pojos.ClientListData;
 import com.mobilespark.master.Pojos.ClientStatData;
@@ -248,6 +250,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         for (String val : outputMatrixStatusMap.values()) {
             if (val.equals("P") || val.equals("F"))
                 break;
+            Toast.makeText(TaskMonitor.this, "Task Complete",
+                    Toast.LENGTH_LONG).show();
         }
 
     }
