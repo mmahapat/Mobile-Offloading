@@ -315,7 +315,7 @@ public class ClientList extends AppCompatActivity {
                     body.put("ip", localIp);
                     volleyController.makeRequest(url, body, GetConsentNetworkCall.this, clientIp);
                 }
-                Thread.sleep(4000);
+                Thread.sleep(7000);
                 //Dummy data
 //                ClientListData data = new ClientListData("MOBILE", "100.0", "192.168.0.1");
 //                data.status = "Agreed";

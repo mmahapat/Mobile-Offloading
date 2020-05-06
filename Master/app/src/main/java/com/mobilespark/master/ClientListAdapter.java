@@ -57,7 +57,7 @@ public class ClientListAdapter extends ArrayAdapter {
         } else if (clientData.status.equalsIgnoreCase("ASSIGNED")
                 || clientData.status.equalsIgnoreCase("FALLBACK")) {
             clientStatus.setTextColor(Color.parseColor("#fadc64"));
-        } else if (clientData.status.equalsIgnoreCase("DISCONNECTED")) {
+        } else if (clientData.status.equalsIgnoreCase("DISCONNECTED ✗")) {
             clientStatus.setTextColor(Color.parseColor("#bf1f1f"));
         } else {
             clientStatus.setTextColor(Color.parseColor("#fadc64"));

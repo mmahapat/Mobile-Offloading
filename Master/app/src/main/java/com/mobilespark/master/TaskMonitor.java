@@ -358,7 +358,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             int[] data = activeClientMap.get(clientIp);
             for (ClientListData clientListData : activeClientData) {
                 if (clientIp.equalsIgnoreCase(clientListData.clientIp)) {
-                    clientListData.status = "Disconnected";
+                    clientListData.status = "Disconnected ✗";
                 }
             }
 //            getViewByPosition(data[0], activeServerslist).setBackgroundColor(Color.RED);
