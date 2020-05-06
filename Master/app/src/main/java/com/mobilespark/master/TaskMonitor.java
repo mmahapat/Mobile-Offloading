@@ -168,6 +168,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         inputMatrixA = GenerateMatrix.createMatrix(size,size);
         inputMatrixB = GenerateMatrix.createMatrix(size,size);
         outputMatrixStatusMap = new HashMap<>();
+        outputMatrix = new int[size][size];
         int start = 0;
         int end = 0;
         int range = size / slaves;
@@ -236,7 +237,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 fallbackClientMap.put(fallbackClientData.get(count).clientIp, new int[]{count,0});
             }
 
-            initliaizeMatrixParams(10);
+            initliaizeMatrixParams(100);
         }
     };
 
@@ -321,7 +322,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         Gson gson = new Gson();
         try {
              //result = (String)jsonObject.get("result");
-            int[][] rangeoutputMatrix = gson.fromJson((JsonElement) jsonObject.get("result"), int[][].class);
+            int[][] rangeoutputMatrix = gson.fromJson((String) jsonObject.get("result"), int[][].class);
             int  k = 0;
             for(int i = start;i<end;i++){
                 outputMatrix[i] = rangeoutputMatrix[k++];
@@ -351,14 +352,14 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         String timeTaken = null;
         try {
             clientIp = parts[0];
-            powerConsumed = (String) jsonObject.get("power_consumed");
-            timeTaken = (String) jsonObject.get("execution_time");
+            powerConsumed = String.valueOf(jsonObject.get("power_consumed"));
+            timeTaken = String.valueOf(jsonObject.get("execution_time"));
 
             ClientStatData clientData = new ClientStatData(ClientList.clientMap.get(clientIp),
                     Float.valueOf(powerConsumed), Long.valueOf(timeTaken));
             statsData.add(clientData);
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Log.e(TAG, "onSuccess: " + "Could not pass JSON");
         }
 
