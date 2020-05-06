@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public String masterName;
     private ImageButton imgButton;
     private TextView status;
-    TextView master;
+    TextView masterTextView;
     private boolean serverRunning = false;
     private static MainActivity instance;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         instance = this;
         imgButton = findViewById(R.id.startStopButton);
         status = findViewById(R.id.status);
-        master = findViewById(R.id.master);
+        masterTextView = findViewById(R.id.master);
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!serverRunning) {
                     try {
-                        server = new Server(getApplicationContext(), ip, master);
+                        server = new Server(getApplicationContext(), ip);
                         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
                         Toast.makeText(MainActivity.this, "Client Started",
                                 Toast.LENGTH_LONG).show();
@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             imgButton.setImageResource(R.drawable.poweron);
             status.setText("Client Status : OFF");
-            master.setText("Not Connected to Master");
-            master.setTextColor(Color.parseColor("#bf1f1f"));
+            masterTextView.setText("Not Connected to Master");
+            masterTextView.setTextColor(Color.parseColor("#bf1f1f"));
             status.setTextColor(Color.parseColor("#bf1f1f"));
         }
     }
@@ -124,20 +124,20 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Stopping server");
     }
 
-    public String getMaster() {
+    public String getMasterName() {
         return masterName;
     }
 
-    private void changeStatusOfClient(String masterIP) {
+    public void changeStatusOfClient(String masterIP) {
         if (masterIP == null) {
             masterName = null;
-            master.setText("Not Connected to Master");
-            master.setTextColor(Color.parseColor("#bf1f1f"));
+            masterTextView.setText("Not Connected to Master");
+            masterTextView.setTextColor(Color.parseColor("#bf1f1f"));
         } else {
             String text = "Connected to : " + masterIP;
             masterName = masterIP;
-            master.setText(text);
-            master.setTextColor(Color.parseColor("#10b542"));
+            masterTextView.setText(text);
+            masterTextView.setTextColor(Color.parseColor("#10b542"));
         }
     }
 }
