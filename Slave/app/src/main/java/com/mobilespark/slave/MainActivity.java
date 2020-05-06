@@ -78,11 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void showMainDialog(final String ip) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-        builder1.setMessage("Scanning is on going, still shutdown the server?");
+        builder1.setMessage(ip + " wants to assign task of matrix multiplication!");
         builder1.setCancelable(true);
-        final String[] response = {"no"};
         builder1.setPositiveButton(
-                "Yes",
+                "Give Permission",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         changeStatusOfClient(ip);
@@ -91,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         builder1.setNegativeButton(
-                "No",
+                "Deny",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         changeStatusOfClient(null);
