@@ -19,6 +19,7 @@ public class VolleyController {
     private static VolleyController mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
+    public static final int timeout = 30;
 
     public VolleyController(Context context) {
         mCtx = context;
@@ -60,7 +61,7 @@ public class VolleyController {
                     }
                 });
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                (int) TimeUnit.SECONDS.toMillis(30),
+                (int) TimeUnit.SECONDS.toMillis(timeout),
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         addToRequestQueue(jsonObjectRequest);

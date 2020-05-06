@@ -7,6 +7,30 @@
         android:layout_width="match_parent"
         android:layout_height="85dp">
 
+        <LinearLayout
+            android:id="@+id/showStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status : " />
+
+            <TextView
+                android:id="@+id/clientStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="Success"
+                android:textColor="#10b542" />
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="66dp"
@@ -36,9 +60,9 @@
 
             <TextView
                 android:layout_width="175dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Power Comsumed (microJoules):" />
+                android:text="Power Consumed (microJoules):" />
 
             <TextView
                 android:id="@+id/powerValue"

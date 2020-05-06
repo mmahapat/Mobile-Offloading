@@ -8,15 +8,27 @@
     android:background="#f1f1f1"
     tools:context=".ClientList">
 
+    <ListView
+        android:id="@+id/all"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.415" />
+
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="149dp"
-        android:layout_marginTop="306dp"
+        android:layout_marginTop="382dp"
         android:layout_marginEnd="150dp"
-        android:layout_marginBottom="406dp"
+        android:layout_marginBottom="330dp"
         android:text="Individual Report"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,10 +40,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="175dp"
-        android:layout_marginTop="142dp"
-        android:layout_marginEnd="174dp"
-        android:layout_marginBottom="570dp"
+        android:layout_marginStart="174dp"
+        android:layout_marginTop="93dp"
+        android:layout_marginEnd="175dp"
+        android:layout_marginBottom="619dp"
         android:text="Summary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +51,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/statList"
+        android:id="@+id/individual"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_alignParentBottom="true"
@@ -48,7 +60,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.659" />
+        app:layout_constraintVertical_bias="0.792" />
 
     <TextView
         android:id="@+id/textView"
@@ -56,25 +68,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="129dp"
+        android:layout_marginTop="39dp"
+        android:layout_marginEnd="130dp"
+        android:layout_marginBottom="673dp"
         android:text="Performance Statistics"
-        app:layout_constraintBottom_toTopOf="@+id/statList"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.268" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/statList2"
+        android:id="@+id/master"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         android:layout_alignParentBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.293" />
+        app:layout_constraintVertical_bias="0.198" />
 
     <Button
         android:id="@+id/homeButton"
@@ -85,7 +99,8 @@
         android:text="Go Home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statList"
-        app:layout_constraintVertical_bias="0.24000001" />
+        app:layout_constraintTop_toBottomOf="@+id/individual"
+        app:layout_constraintVertical_bias="0.714" />
 </androidx.constraintlayout.widget.ConstraintLayout>

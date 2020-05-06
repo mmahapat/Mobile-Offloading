@@ -356,6 +356,18 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             activeClientMap.put(clientIp, new int[]{data[0], 0});
         }
 
+        //Update stats data
+
+        if(ClientList.clientMap.containsKey(clientIp)) {
+            float powerConsumed = 0;
+            Long timeTaken = Long.valueOf(VolleyController.timeout);
+            ClientStatData clientstatsData = new ClientStatData(ClientList.clientMap.get(clientIp),
+                    Float.valueOf(powerConsumed), Long.valueOf(timeTaken));
+            clientstatsData.status = "Failed";
+
+            statsData.add(clientstatsData);
+        }
+
         ((ClientListAdapter) (activeServerslist.getAdapter())).notifyDataSetChanged();
         ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
 

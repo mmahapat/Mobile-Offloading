@@ -1,6 +1,7 @@
 package com.mobilespark.master;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,18 @@ public class ClientStatsAdapter extends ArrayAdapter {
             time.setText(Long.toString(statData.timeTaken));
             TextView power = (TextView) convertView.findViewById(R.id.powerValue);
             power.setText(Float.toString(statData.powerConsumed));
+            LinearLayout showStatusLayout = convertView.findViewById(R.id.showStatus);
+            TextView clientStatus = convertView.findViewById(R.id.clientStatus);
+            clientStatus.setText(statData.status);
+            if (statData.status.equalsIgnoreCase("Success")) {
+                clientStatus.setTextColor(Color.parseColor("#10b542"));
+            }
+            else if (statData.status.equalsIgnoreCase("Failed")) {
+                clientStatus.setTextColor(Color.parseColor("#bf1f1f"));
+            } else {
+                clientStatus.setTextColor(Color.parseColor("#FFCC00"));
+            }
+
         }
         return convertView;
     }
