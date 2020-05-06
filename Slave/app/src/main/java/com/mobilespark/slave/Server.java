@@ -98,7 +98,7 @@ public class Server extends NanoHTTPD {
         };
         new Handler(Looper.getMainLooper()).post(yourRunnable);
         try {
-            Thread.sleep(3000);
+            Thread.sleep(4000);
             if (MainActivity.getInstance().getMaster() == null) {
                 response.put("consent","no");
             }else {
