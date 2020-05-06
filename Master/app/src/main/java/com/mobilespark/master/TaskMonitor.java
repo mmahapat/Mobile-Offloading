@@ -350,11 +350,11 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     @Override
     public void onSuccess(JSONObject jsonObject, String identifier) {
         String[] parts = identifier.trim().split(" ");
-        String clientIp = parts[0];
+        String clientIp = null;
         String powerConsumed = null;
         String timeTaken = null;
         try {
-            clientIp = (String) jsonObject.get("ip");
+            clientIp = parts[0];
             powerConsumed = (String) jsonObject.get("power_consumed");
             timeTaken = (String) jsonObject.get("execution_time");
 
