@@ -1,15 +1,22 @@
 package com.mobilespark.slave;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
@@ -66,6 +73,8 @@ public class Server extends NanoHTTPD {
                         return ping(bodyParams);
                     case "/unregister":
                         return unRegister();
+                    case "/register":
+                        return register(bodyParams);
                     case "/status":
                         return status(bodyParams);
                     case "/calculate":
@@ -76,6 +85,28 @@ public class Server extends NanoHTTPD {
                 Log.e(TAG, "serve: " + "Error in serving");
                 return newFixedLengthResponse(Response.Status.NOT_IMPLEMENTED, NanoHTTPD.MIME_PLAINTEXT, "HTTP " + method);
         }
+    }
+
+    private Response register(Map<String, String> bodyParams) {
+        JSONObject response = new JSONObject();
+        final String ip = bodyParams.get("ip");
+        Runnable yourRunnable = new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.getInstance().showMainDialog(ip);
+            }
+        };
+        new Handler(Looper.getMainLooper()).post(yourRunnable);
+        try {
+            Thread.sleep(3000);
+            if (MainActivity.getInstance().getMaster() == null) {
+                response.put("consent","no");
+            }else {
+                response.put("consent","yes");
+            }
+        } catch (Exception e) {
+        }
+        return newFixedLengthResponse(Response.Status.OK, "application/json", response.toString());
     }
 
     private Response unRegister() {
@@ -103,7 +134,7 @@ public class Server extends NanoHTTPD {
         int finalPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
 
         String finalResult = gson.toJson(result);
-        float powerConsumed = ( initPower - finalPower ) / 3600;
+        float powerConsumed = (initPower - finalPower) / 3600;
 
         try {
             response.put("power_consumed", powerConsumed);
@@ -139,7 +170,7 @@ public class Server extends NanoHTTPD {
     private void changeStatusOfClient(String masterIP) {
         Log.e(TAG, "changeStatusOfClient: " + masterIP);
         if (masterIP == null) {
-            master.setText("Not Connected");
+            master.setText("Not Connected to Master");
             master.setTextColor(Color.parseColor("#bf1f1f"));
         } else {
             String text = "Connected to : " + masterIP;
