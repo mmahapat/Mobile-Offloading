@@ -156,7 +156,6 @@ public class ClientList extends AppCompatActivity {
                 Intent taskMonitorScreen = new Intent(ClientList.this, TaskMonitor.class);
                 String slaveNumber = _clientNumbers.getSelectedItem().toString();
                 taskMonitorScreen.putExtra("Slaves", Integer.parseInt(slaveNumber));
-                //taskMonitorScreen.putExtra("ClientList",clientData);
                 startActivity(taskMonitorScreen);
             }
         });
@@ -167,7 +166,8 @@ public class ClientList extends AppCompatActivity {
             MainActivity.server.stop();
         new DeregisterClients().execute();
         MainActivity.serverRunning = false;
-        ClientList.super.onBackPressed();
+        Intent ac = new Intent(this, MainActivity.class);
+        startActivity(ac);
     }
 
     @Override
@@ -211,10 +211,9 @@ public class ClientList extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(Object... values) {
-//            super.onProgressUpdate(values);
+            super.onProgressUpdate(values);
             if (values[0] != null) {
                 clientData.add((ClientListData) values[0]);
-                //Dummy data
                 ((ClientListAdapter) (listView.getAdapter())).notifyDataSetChanged();
             } else {
                 int percent = (int) values[1];
@@ -315,13 +314,6 @@ public class ClientList extends AppCompatActivity {
                     volleyController.makeRequest(url, body, GetConsentNetworkCall.this, clientIp);
                 }
                 Thread.sleep(7000);
-                //Dummy data
-//                ClientListData data = new ClientListData("MOBILE", "100.0", "192.168.0.1");
-//                data.status = "Agreed";
-//                ClientListData data1 = new ClientListData("MOBILE", "100.0", "192.168.0.2");
-//                data1.status = "Agreed";
-//                publishProgress(data, 30);
-//                publishProgress(data1, 30);
             } catch (Throwable t) {
                 Log.e(TAG, "Well that's not good.", t);
             }
@@ -358,7 +350,6 @@ public class ClientList extends AppCompatActivity {
             super.onProgressUpdate(values);
             if (values[0] != null) {
                 clientWithConsentData.add((ClientListData) values[0]);
-                //Dummy data
                 ((ClientListAdapter) (_clientsWithConsentList.getAdapter())).notifyDataSetChanged();
             }
         }
@@ -398,7 +389,7 @@ public class ClientList extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             try {
                 Log.e(TAG, "doInBackground: " + clientWithConsentData.size());
-                for (ClientListData client : clientWithConsentData) {
+                for (ClientListData client : clientData) {
                     if (isCancelled()) break;
                     String clientIp = client.clientIp;
                     String url = "http://" + clientIp + ":8080/unregister";
