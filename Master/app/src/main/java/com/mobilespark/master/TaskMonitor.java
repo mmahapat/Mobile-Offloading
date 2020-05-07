@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Bundle;
@@ -146,8 +147,9 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 GenerateMatrix.multiplyMatrix(inputMatrixA, inputMatrixB);
                 long end = Calendar.getInstance().getTimeInMillis();
                 int finalPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
+                float voltage = getVoltage() / 1000;
 
-                float powerConsumed = (initPower - finalPower) / 3600;
+                float powerConsumed = (initPower - finalPower) * voltage;
                 int timeTaken = (int) (end - start);
                 Log.i("Power consumed", Float.toString(powerConsumed));
                 ClientStatData data = new ClientStatData("Master", powerConsumed, timeTaken);
@@ -158,6 +160,12 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             }
         });
 
+    }
+
+    private int getVoltage() {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent b = getApplicationContext().registerReceiver(null, ifilter);
+        return b.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
     }
 
     //Set background color to Yellow and gray for Slave and Fallback Servers
@@ -172,7 +180,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
                 fallbackClientMap.put(fallbackClientData.get(count).clientIp, new int[]{count, 0});
             }
 
-            initializeMatrixParams(300);
+            initializeMatrixParams(800);
             _assignTaskButton.setEnabled(true);
             _useMasterButton.setEnabled(true);
 
@@ -336,7 +344,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
         //Update stats data
 
-        if(ClientList.clientMap.containsKey(clientIp)) {
+        if (ClientList.clientMap.containsKey(clientIp)) {
             float powerConsumed = 0;
             Long timeTaken = Long.valueOf(VolleyController.timeout);
             ClientStatData clientstatsData = new ClientStatData(ClientList.clientMap.get(clientIp),

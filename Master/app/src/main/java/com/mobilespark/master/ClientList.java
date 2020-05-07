@@ -193,8 +193,6 @@ public class ClientList extends AppCompatActivity {
             scanStatus.setVisibility(View.GONE);
             pb.setVisibility(View.GONE);
 
-            Toast.makeText(ClientList.this, "Scan Complete",
-                    Toast.LENGTH_LONG).show();
             if (clientData.size() < 1) {
                 Toast.makeText(ClientList.this, "No Clients found, Please Rescan",
                         Toast.LENGTH_LONG).show();
@@ -251,6 +249,7 @@ public class ClientList extends AppCompatActivity {
                     publishProgress(null, (i * 100) / 255);
                     volleyController.makeRequest(url, body, NetworkDiscovery.this, null);
                 }
+                Thread.sleep(2000);
             } catch (Throwable t) {
                 Log.e(TAG, "Well that's not good.", t);
             }

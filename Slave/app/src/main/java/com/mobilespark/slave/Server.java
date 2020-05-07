@@ -139,7 +139,7 @@ public class Server extends NanoHTTPD {
         int finalPower = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
 
         String finalResult = gson.toJson(result);
-        float powerConsumed = (initPower - finalPower) * voltage / 3600;
+        float powerConsumed = (initPower - finalPower) * voltage;
 
         try {
             response.put("power_consumed", powerConsumed);

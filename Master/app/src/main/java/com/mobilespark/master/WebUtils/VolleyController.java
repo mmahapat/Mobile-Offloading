@@ -19,7 +19,7 @@ public class VolleyController {
     private static VolleyController mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
-    public static final int timeout = 30;
+    public static final int timeout = 300;
 
     public VolleyController(Context context) {
         mCtx = context;
