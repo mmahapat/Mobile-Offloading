@@ -45,10 +45,10 @@ public class ClientStatsAdapter extends ArrayAdapter {
             LinearLayout showStatusLayout = convertView.findViewById(R.id.showStatus);
             TextView clientStatus = convertView.findViewById(R.id.clientStatus);
             clientStatus.setText(statData.status);
-            if (statData.status.equalsIgnoreCase("Success")) {
+            if (statData.status.equalsIgnoreCase("Success ✓")) {
                 clientStatus.setTextColor(Color.parseColor("#10b542"));
             }
-            else if (statData.status.equalsIgnoreCase("Failed")) {
+            else if (statData.status.equalsIgnoreCase("Failed ✗")) {
                 clientStatus.setTextColor(Color.parseColor("#bf1f1f"));
             } else {
                 clientStatus.setTextColor(Color.parseColor("#FFCC00"));

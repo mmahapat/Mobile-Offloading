@@ -372,7 +372,7 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             Long timeTaken = Long.valueOf(VolleyController.timeout);
             ClientStatData clientstatsData = new ClientStatData(ClientList.clientMap.get(clientIp),
                     Float.valueOf(powerConsumed), Long.valueOf(timeTaken));
-            clientstatsData.status = "Failed";
+            clientstatsData.status = "Failed ✗";
 
             statsData.add(clientstatsData);
         }

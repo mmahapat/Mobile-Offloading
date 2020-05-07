@@ -11,6 +11,6 @@ public class ClientStatData {
         this.clientName = clientName;
         this.powerConsumed = powerConsumed;
         this.timeTaken = timeTaken;
-        this.status = "Success";
+        this.status = "Success ✓";
     }
 }
