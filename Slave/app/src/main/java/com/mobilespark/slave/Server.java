@@ -154,7 +154,7 @@ public class Server extends NanoHTTPD {
     private Response status(Map<String, String> bodyParams) {
         IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = applicationContext.registerReceiver(null, iFilter);
-        String model = Build.MODEL;
+        String model = Build.MANUFACTURER;
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         String masterIP = bodyParams.get("ip");
