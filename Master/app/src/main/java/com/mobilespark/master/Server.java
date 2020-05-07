@@ -12,7 +12,7 @@ public class Server extends NanoHTTPD {
     private static final String TAG = "Server";
 
     Server() throws IOException {
-        super(8080);
+        super(8081);
 //        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 //        System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
     }

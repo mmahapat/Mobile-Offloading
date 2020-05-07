@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         server = new Server();
                         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-                        Toast.makeText(MainActivity.this, "Running on http://localhost:8080",
+                        Toast.makeText(MainActivity.this, "Running on http://localhost:8081",
                                 Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "onCreate: \\nRunning! Point your browsers to http://localhost:8080/ \\n\"");
+                        Log.d(TAG, "onCreate: \\nRunning! Point your browsers to http://localhost:8081/ \\n\"");
                         serverRunning = true;
                         changeStatus();
                         Intent intent = new Intent(MainActivity.this, ClientList.class);
