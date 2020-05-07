@@ -48,24 +48,25 @@
             android:background="#ffffff"
             android:padding="16dp" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/assignbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_gravity="center"
-            android:text="ASSIGN " />
+            android:text="ASSIGN "
+            android:layout_marginTop="10dp"/>
 
         <Button
             android:id="@+id/useMasterButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="74dp"
-            android:text="MERGE AND GENERATE STATS" />
-    </RelativeLayout>
+            android:layout_gravity="center"
+            android:text="MERGE AND GENERATE STATS"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
 </LinearLayout>
