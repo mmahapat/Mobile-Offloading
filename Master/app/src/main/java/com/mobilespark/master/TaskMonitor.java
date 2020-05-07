@@ -44,7 +44,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private Map<String, int[]> activeClientMap;
     private Map<String, int[]> fallbackClientMap;
     private Button _assignTaskButton;
-    private Button _mergeTaskButton;
     private Button _useMasterButton;
     private int slaves;
     private int[][] inputMatrixA;
@@ -53,7 +52,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
     private int countOfSlave;
     //key: "0-250" value: "S": Success, "F": Failure, "P": Pending
     private Map<String, String> outputMatrixStatusMap;
-    public static boolean flagmaster = false;
 
     //Stats data
     public static List<ClientStatData> statsData;
@@ -69,10 +67,8 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         activeServerslist = findViewById(R.id.activeServers);
         fallbackServerslist = findViewById(R.id.fallbackServers);
         _assignTaskButton = findViewById(R.id.assignbutton);
-        _mergeTaskButton = findViewById(R.id.mergebutton);
         _useMasterButton = findViewById(R.id.useMasterButton);
         _assignTaskButton.setEnabled(false);
-        _mergeTaskButton.setEnabled(false);
         _useMasterButton.setEnabled(false);
         int i = 0;
 
@@ -117,7 +113,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             @Override
             public void onClick(View view) {
                 _assignTaskButton.setEnabled(false);
-                _mergeTaskButton.setEnabled(false);
                 _useMasterButton.setEnabled(false);
                 Toast.makeText(TaskMonitor.this, "Sending requests",
                         Toast.LENGTH_LONG).show();
@@ -134,7 +129,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             @Override
             public void onClick(View view) {
 
-                flagmaster = true;
                 //Calculate total Slave Data
                 float totalPowerConsumed = 0;
                 long totalTimeTaken = 0;
@@ -164,29 +158,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
             }
         });
 
-        _mergeTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                flagmaster = true;
-                if (countOfSlave != 0) {
-                    Log.e(TAG, "onClick: " + "Everything not completed");
-                    return;
-                }
-                //Calculate total Slave Data
-                float totalPowerConsumed = 0;
-                long totalTimeTaken = 0;
-                for (ClientStatData csData : statsData) {
-                    totalPowerConsumed += csData.powerConsumed;
-                    totalTimeTaken += csData.timeTaken;
-                }
-                // Add total Data
-                statsData.add(new ClientStatData("All Clients", totalPowerConsumed, totalTimeTaken));
-
-                Intent statScreen = new Intent(TaskMonitor.this, ResultStatistics.class);
-                startActivity(statScreen);
-            }
-        });
-
     }
 
     //Set background color to Yellow and gray for Slave and Fallback Servers
@@ -203,7 +174,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
 
             initializeMatrixParams(300);
             _assignTaskButton.setEnabled(true);
-            _mergeTaskButton.setEnabled(true);
             _useMasterButton.setEnabled(true);
 
             Toast.makeText(TaskMonitor.this, "Setup done!",
@@ -340,7 +310,6 @@ public class TaskMonitor extends AppCompatActivity implements ClientResponse {
         ((ClientListAdapter) (fallbackServerslist.getAdapter())).notifyDataSetChanged();
         if (countOfSlave == 0) {
             _assignTaskButton.setEnabled(true);
-            _mergeTaskButton.setEnabled(true);
             _useMasterButton.setEnabled(true);
         }
         updateMatrix(jsonObject, identifier);

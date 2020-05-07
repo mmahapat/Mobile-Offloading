@@ -39,16 +39,11 @@ public class ResultStatistics extends AppCompatActivity {
         Log.i("power", Float.toString(TaskMonitor.statsData.get(0).powerConsumed));
         Log.i("time", Long.toString(TaskMonitor.statsData.get(0).timeTaken));
 
-        int val = 1;
-        if(TaskMonitor.flagmaster) {
-             val = 2;
-             masteradapter = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(TaskMonitor.statsData.size()-1,TaskMonitor.statsData.size()) );
-             masterStats.setAdapter(masteradapter);
-        }
 
-
-        individualadapter = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(0,TaskMonitor.statsData.size()-val) );
-        allClientsadapter = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(TaskMonitor.statsData.size()-val,TaskMonitor.statsData.size()-(val - 1)) );
+        masteradapter = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(TaskMonitor.statsData.size()-1,TaskMonitor.statsData.size()) );
+        masterStats.setAdapter(masteradapter);
+        individualadapter = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(0,TaskMonitor.statsData.size()-2) );
+        allClientsadapter = new ClientStatsAdapter(this, TaskMonitor.statsData.subList(TaskMonitor.statsData.size()-2,TaskMonitor.statsData.size()- 1));
 
         clientStats.setAdapter(individualadapter);
         allClientStats.setAdapter(allClientsadapter);
